@@ -25,6 +25,9 @@ class UserRelationship(models.Model):
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='receiver')
     got_connected = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('initiator', 'receiver')
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
@@ -33,3 +36,6 @@ class Tag(models.Model):
 class UserTag(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'tag')
