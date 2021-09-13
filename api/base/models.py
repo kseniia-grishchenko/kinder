@@ -15,8 +15,8 @@ class CustomUser(models.Model):
     sex = models.CharField(choices=SEX_CHOICES, default='Not chosen', max_length=20)
     location = models.CharField(max_length=50)
     contact = models.CharField(max_length=30)
-    photo = models.ImageField(default='image/default.jpg')
-    description = models.TextField(max_length=500, blank=True)
+    photo = models.ImageField(default='image/default.jpg', blank=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
     budget = models.IntegerField(blank=True, null=True)
 
 
@@ -24,9 +24,6 @@ class UserRelationship(models.Model):
     initiator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='initiator')
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='receiver')
     got_connected = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('initiator', 'receiver')
 
 
 class Tag(models.Model):
@@ -36,6 +33,3 @@ class Tag(models.Model):
 class UserTag(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('user', 'tag')
