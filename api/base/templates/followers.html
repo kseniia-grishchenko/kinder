@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Subscriptions</title>
+    <title>Followers</title>
 </head>
 <body>
 
@@ -10,12 +10,14 @@
 
 {% if len == 0 %}
 
-<h5>There is no users in subscriptions<h5>
+<h5>There is no users in followers<h5>
 
 {% else %}
 
-{% for x in subscriptions %}
+{% for x in followers %}
+
 <h5>{{x}}</h5>
+
 {% endfor %}
 
 {% endif %}

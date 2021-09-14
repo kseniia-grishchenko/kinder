@@ -46,7 +46,8 @@ def login_user(request):
 
 def list_all(request):
     context = {}
-    users = CustomUser.objects.select_related('user').all()
+    user = User.objects.get(id=request.user.id)
+    users = CustomUser.objects.select_related('user').all().exclude(user=user)
     context['users'] = users
     return render(request, 'home.html', context)
 
@@ -88,6 +89,8 @@ def change_password(request):
 
 
 def update_relationship(request, id):
+    if request.user.id == int(id):
+        return redirect('/')
     sender = CustomUser.objects.get(user=request.user.id)
 
     if request.method == "POST":
@@ -105,8 +108,16 @@ def update_relationship(request, id):
 
 
 def user_subscriptions(request, id):
-    user_id = id
-    user = User.objects.get(id=user_id)
+    user = CustomUser.objects.get(user_id=id)
     subscriptions = user.subscriptions.all()
-    context = {"subscriptions": subscriptions, "username": user.username, "user_id": id}
+    context = {"subscriptions": subscriptions, "username": user.first_name,
+               "user_id": user.id, "len": len(subscriptions)}
     return render(request, 'subscriptions.html', context)
+
+
+def user_followers(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    followers = user.followers.all()
+    context = {"followers": followers, "username": user.first_name,
+               "user_id": id, "len": len(followers)}
+    return render(request, 'followers.html', context)
