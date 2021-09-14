@@ -1,16 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
-
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.http import HttpResponseRedirect
 from .forms import UserForm, CustomUserRegisterForm, LoginForm, CustomUserForm
 from .models import CustomUser
 from django.contrib.auth.models import User
-
-
-def HomePage(request):
-    return render(request, "home.html")
 
 
 def register_user(request):
@@ -90,3 +85,30 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     context['form'] = form
     return render(request, 'password_change.html', context)
+
+
+def create_relationship(request, id):
+
+    user = request.user
+    sender = CustomUser.objects.get(user=user.id)
+
+    if request.method == "POST":
+        receiver_id = id
+        receive = User.objects.get(id=receiver_id)
+
+        subscriptions = sender.subscriptions.all()
+        if receive in subscriptions:
+            sender.subscriptions.remove(receive)
+        else:
+            sender.subscriptions.add(receive)
+        subscriptions.update()
+
+    return redirect('users')
+
+
+def user_subscriptions(request, id):
+    user_id = id
+    user = User.objects.get(id=user_id)
+    subscriptions = user.subscriptions.all()
+    context = {"subscriptions": subscriptions, "username": user.username, "user_id": id}
+    return render(request, 'subscriptions.html', context)
