@@ -6,8 +6,23 @@
 </head>
 <body>
     <div>{{user.user.username}}, {{user.age}}</div>
+
+    {% if request.user.is_authenticated %}
+    <form action="/create-relationship/{{ user.user.id }}/" method="POST" class="ui form" >
+        {% csrf_token %}
+        {% if request.user not in user.followers.all %}
+            <button class="ui button positive" type="submit" style="background-color: lightskyblue; color: black">Subscribe</button>
+        {% else %}
+            <button class="ui button negative" type="submit" style="background-color: lightskyblue; color: black">Unsubscribe</button>
+        {% endif %}
+    </form>
+    {% endif %}
+
     <div>{{user.sex}}</div>
     <div>{{user.location}}</div>
     <div>{{user.description}}</div>
+
+    <a href= "/subscriptions/{{ user.user.id }}/">{{ user.user.username }} subscriptions</a>
+
 </body>
 </html>

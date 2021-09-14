@@ -10,7 +10,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('user/<str:id>/', get_user_profile, name='user-profile'),
     path('profile/update', update_profile, name='update-profile'),
-    path('change-password/', change_password, name='change-password')
+    path('change-password/', change_password, name='change-password'),
+    path('create-relationship/<str:id>/', create_relationship, name='relationship'),
+    path('subscriptions/<str:id>/', user_subscriptions, name='subscriptions')
     # path('profile', get_user_profile, name='users-profile'),
     # path('profile/update', views.update_user_profile, name='user-profile-update'),
     # path('', views.get_users, name='users'),
