@@ -19,6 +19,9 @@ class CustomUser(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True)
     budget = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.first_name
+
 
 class UserRelationship(models.Model):
     initiator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='initiator')
