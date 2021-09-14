@@ -1,12 +1,8 @@
 from django.shortcuts import render
 
-# relative import of forms
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
-from .models import CustomUser
 from .forms import UserForm, CustomUserForm, LoginForm
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
 
 
 def HomePage(request):
@@ -21,8 +17,7 @@ def register_user(request):
 
     if all((user_form.is_valid(), custom_user_form.is_valid())):
         user = user_form.save()
-        password = make_password(user_form.cleaned_data['password'])
-        print(password)
+        password = user_form.cleaned_data['password']
         user.set_password(password)
         user = user_form.save()
         custom_user = custom_user_form.save(commit=False)
@@ -39,7 +34,7 @@ def login_user(request):
     form = LoginForm(request.POST or None)
     if form.is_valid():
         username = form.cleaned_data['username']
-        password = make_password(form.cleaned_data['password'])
+        password = form.cleaned_data['password']
         user = authenticate(
             username=username, password=password
         )
