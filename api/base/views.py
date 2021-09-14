@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from .forms import UserForm, CustomUserRegisterForm, LoginForm, CustomUserForm
 from .models import CustomUser
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
 
 def register_user(request):
@@ -46,8 +47,10 @@ def login_user(request):
 
 def list_all(request):
     context = {}
-    user = User.objects.get(id=request.user.id)
-    users = CustomUser.objects.select_related('user').all().exclude(user=user)
+    users = CustomUser.objects.select_related('user').all()
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        users = users.exclude(user=user)
     context['users'] = users
     return render(request, 'home.html', context)
 
@@ -79,7 +82,7 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('change_password')
+            return redirect('users')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
