@@ -8,7 +8,7 @@
     <div>{{user.user.username}}, {{user.age}}</div>
 
     {% if request.user.is_authenticated %}
-    <form action="/create-relationship/{{ user.user.id }}/" method="POST" class="ui form" >
+    <form action="/update-relationship/{{ user.user.id }}/" method="POST" class="ui form" >
         {% csrf_token %}
         {% if request.user not in user.followers.all %}
             <button class="ui button positive" type="submit" style="background-color: lightskyblue; color: black">Subscribe</button>
