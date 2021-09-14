@@ -87,21 +87,19 @@ def change_password(request):
     return render(request, 'password_change.html', context)
 
 
-def create_relationship(request, id):
-
-    user = request.user
-    sender = CustomUser.objects.get(user=user.id)
+def update_relationship(request, id):
+    sender = CustomUser.objects.get(user=request.user.id)
 
     if request.method == "POST":
-        receiver_id = id
-        receive = User.objects.get(id=receiver_id)
-
+        user = User.objects.get(id=id)
+        receiver = CustomUser.objects.get(user=user)
         subscriptions = sender.subscriptions.all()
-        if receive in subscriptions:
-            sender.subscriptions.remove(receive)
+        if receiver in subscriptions:
+            sender.subscriptions.remove(receiver)
+            receiver.followers.remove(sender)
         else:
-            sender.subscriptions.add(receive)
-        subscriptions.update()
+            sender.subscriptions.add(receiver)
+            receiver.followers.add(sender)
 
     return redirect('users')
 
