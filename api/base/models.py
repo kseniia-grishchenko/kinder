@@ -18,8 +18,8 @@ class CustomUser(models.Model):
     photo = models.ImageField(default='image/default.jpg', blank=True)
     description = models.TextField(max_length=500, blank=True, null=True)
     budget = models.IntegerField(blank=True, null=True)
-    subscriptions = models.ManyToManyField(User, related_name='subscriptions', blank=True)
-    followers = models.ManyToManyField(User, related_name='following', blank=True)
+    subscriptions = models.ManyToManyField("self", related_name='user_subscriptions', blank=True, symmetrical=False)
+    followers = models.ManyToManyField("self", related_name='user_followers', blank=True, symmetrical=False)
 
     def __str__(self):
         return self.first_name
