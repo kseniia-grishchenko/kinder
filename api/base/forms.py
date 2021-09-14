@@ -31,6 +31,7 @@ class CustomUserRegisterForm(forms.ModelForm):
             "contact"
         ]
 
+
 class CustomUserForm(forms.ModelForm):
     class Meta:
         # specify model to be used
@@ -72,5 +73,4 @@ class LoginForm(forms.ModelForm):
             if not user.check_password(password):
                 raise forms.ValidationError("Wrong password")
         return self.cleaned_data
-
 
