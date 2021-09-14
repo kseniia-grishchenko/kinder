@@ -4,10 +4,13 @@ from .views import *
 
 
 urlpatterns = [
-    path('', HomePage, name='basic'),
+    path('', list_all, name='users'),
     path('login/', login_user, name='login'),
     path('register/', register_user, name='register'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout')
+    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    path('user/<str:id>/', get_user_profile, name='user-profile'),
+    path('profile/update', update_profile, name='update-profile'),
+    path('change-password/', change_password, name='change-password')
     # path('profile', get_user_profile, name='users-profile'),
     # path('profile/update', views.update_user_profile, name='user-profile-update'),
     # path('', views.get_users, name='users'),
