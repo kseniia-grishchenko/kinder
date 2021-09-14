@@ -4,23 +4,35 @@
     <meta charset="UTF-8">
     <title>Followers</title>
 </head>
+<style>
+    .followers {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+</style>
 <body>
+    <div class="followers">
+        <h3>{{ username }} followers:</h3>
 
-<h3>{{ username }} subscriptions:</h3>
+        {% if len == 0 %}
 
-{% if len == 0 %}
+        <div>There is no users in followers</div>
 
-<h5>There is no users in followers<h5>
+        {% else %}
 
-{% else %}
+        {% for x in followers %}
 
-{% for x in followers %}
+        <div>{{x}}</div>
 
-<h5>{{x}}</h5>
+        {% endfor %}
 
-{% endfor %}
-
-{% endif %}
-
+        {% endif %}
+    </div>
 </body>
 </html>

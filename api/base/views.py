@@ -61,8 +61,9 @@ def get_user_profile(request, id):
     user = User.objects.get(id=id)
     custom_user = CustomUser.objects.select_related('user').get(user=user)
     context['user'] = custom_user
-    mutually_subscribed = custom_user in current_user.followers.all() \
-                          and custom_user in current_user.subscriptions.all()
+    subscribed = custom_user in current_user.subscriptions.all()
+    mutually_subscribed = subscribed and custom_user in current_user.followers.all()
+    context['subscribed'] = subscribed
     context['mutually_subscribed'] = mutually_subscribed
     return render(request, 'profile.html', context)
 
