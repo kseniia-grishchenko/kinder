@@ -24,6 +24,10 @@
     <div>{{user.location}}</div>
     <div>{{user.description}}</div>
 
+    {% if mutually_subscribed == True %}
+    <div>{{user.contact}}</div>
+    {% endif %}
+
     <div>
     <a href= "/subscriptions/{{ user.user.id }}/">{{ user.user.username }} subscriptions</a>
     </div>
