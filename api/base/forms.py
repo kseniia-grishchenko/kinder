@@ -16,7 +16,7 @@ class UserForm(forms.ModelForm):
         ]
 
 
-class CustomUserForm(forms.ModelForm):
+class CustomUserRegisterForm(forms.ModelForm):
     # create meta class
     class Meta:
         # specify model to be used
@@ -29,6 +29,23 @@ class CustomUserForm(forms.ModelForm):
             "sex",
             "location",
             "contact"
+        ]
+
+class CustomUserForm(forms.ModelForm):
+    class Meta:
+        # specify model to be used
+        model = CustomUser
+
+        # specify fields to be used
+        fields = [
+            "photo",
+            "first_name",
+            "age",
+            "sex",
+            "location",
+            "contact",
+            "description",
+            "budget"
         ]
 
 
@@ -55,3 +72,5 @@ class LoginForm(forms.ModelForm):
             if not user.check_password(password):
                 raise forms.ValidationError("Wrong password")
         return self.cleaned_data
+
+
