@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Subscriptions</title>
+    <title>Followers</title>
 </head>
 <style>
-    .subscriptions {
+    .followers {
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -17,21 +17,22 @@
     }
 </style>
 <body>
-    <div class="subscriptions">
-        <h3>{{ username }}'s subscriptions:</h3>
+    <div class="followers">
+        <h3>{{ username }} followers:</h3>
 
         {% if len == 0 %}
-        <div>There is no users in subscriptions</div>
+
+        <div>There is no users in followers</div>
 
         {% else %}
 
-        {% for x in subscriptions %}
+        {% for x in followers %}
+
         <div>{{x}}</div>
+
         {% endfor %}
 
         {% endif %}
     </div>
-
-
 </body>
 </html>
