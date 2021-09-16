@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My profile</title>
+</head>
+<style>
+    p, div {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+    }
+</style>
+<body>
+    <a href= "/subscriptions/{{ request.user.id }}/">{{ request.user.username }} subscriptions</a>
+    <a href= "/followers/{{ request.user.id }}/">{{ request.user.username }} followers</a>
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- Security token -->
+        {% csrf_token %}
+
+        <!-- Using the formset -->
+        {{ form.as_p }}
+
+        <div>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+</body>
+</html>

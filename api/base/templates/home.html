@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic</title>
+</head>
+<style>
+    .users {
+        text-align: center;
+        padding: 20px;
+    }
+    .user {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin: 10px 0;
+    }
+
+    .log {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    .my-profile {
+        position: absolute;
+        top: 0;
+    }
+
+    #change-password {
+        position: absolute;
+        top: 0;
+        right: 6px;
+    }
+</style>
+<body>
+    {% if request.user.is_authenticated %}
+    <div class="my-profile">
+        <a href= "{% url 'update-profile' %}" style="color: red">Hello, {{request.user.username}}</a>
+    </div>
+    <div id="change-password">
+       <a href= "{% url 'change-password' %}" style="color: red">Change password</a>
+    </div>
+    {% endif %}
+    <div class="users">
+        {% for user in users %}
+        <div class="user">
+            <div>
+                <a href= "/user/{{ user.user.id }}/">{{user.user.username}}</a>,
+                {{user.age}}</div>
+            <div>{{user.location}}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <div class="log">
+        <a href= "{% url 'logout' %}" style="color: red">Log out</a>
+    </div>
+    {% else %}
+    <div class="log">
+        <a href= "{% url 'login' %}" style="color: red">Log in</a>
+    </div>
+    {% endif %}
+</body>
+</html>

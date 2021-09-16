@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Followers</title>
+</head>
+<style>
+    .followers {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+</style>
+<body>
+    <div class="followers">
+        <h3>{{ username }} followers:</h3>
+
+        {% if len == 0 %}
+
+        <div>There is no users in followers</div>
+
+        {% else %}
+
+        {% for x in followers %}
+
+        <div>{{x}}</div>
+
+        {% endfor %}
+
+        {% endif %}
+    </div>
+</body>
+</html>
