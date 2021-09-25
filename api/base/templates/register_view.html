@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<style>
+    p, div {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+    }
+</style>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- Security token -->
+        {% csrf_token %}
+
+        <!-- Using the formset -->
+        {{ user_form.as_p }}
+        {{ custom_user_form.as_p }}
+
+        <div>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+</body>
+</html>
