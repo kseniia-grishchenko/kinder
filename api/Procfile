@@ -1,1 +1,2 @@
 web: gunicorn api.wsgi
+web: python manage.py runserver
