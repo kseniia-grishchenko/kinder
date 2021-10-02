@@ -1,0 +1,31 @@
+.ant-page-header-content,
+.ant-page-header-content > #user-info,
+.ant-page-header-content > #relations
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ant-page-header.ant-page-header-ghost {
+    background-color: var(--app-bg);
+    color: var(--app-color);
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.ant-page-header-content {
+    padding: 0 !important;
+}
+
+#user-info, #relations {
+    gap: 15px;
+}
+
+#relations > button {
+    color: var(--app-color);
+    background-color: var(--app-bg-4);
+    border: transparent;
+    border-radius: 10px;
+}
+
