@@ -146,7 +146,7 @@ def update_relationship(request, id):
 
 
 @api_view(['GET'])
-def user_subscriptions(request, id):
+def get_user_subscriptions(request, id):
     user = CustomUser.objects.get(user_id=id)
     subscriptions = user.subscriptions.all()
     serializer = CustomUserSerializer(subscriptions, many=True)
@@ -154,9 +154,15 @@ def user_subscriptions(request, id):
 
 
 @api_view(['GET'])
-def user_followers(request, id):
+def get_user_followers(request, id):
     user = CustomUser.objects.get(user_id=id)
     followers = user.followers.all()
     serializer = CustomUserSerializer(followers, many=True)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def get_custom_user(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    serializer = CustomUserSerializer(user, many=False)
+    return Response(serializer.data)
