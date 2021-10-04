@@ -28,16 +28,11 @@ class UserSerializerWithToken(UserSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField(read_only=True)
     is_admin = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = CustomUser
         fields = '__all__'
 
-    def get_user(self, obj):
-        return obj.user.username
-
     def get_is_admin(self, obj):
         return obj.user.is_staff
-
