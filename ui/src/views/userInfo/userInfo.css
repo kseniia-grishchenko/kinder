@@ -1,0 +1,21 @@
+#main-info {
+    display: flex;
+    padding: 20px;
+}
+
+#main-info > #important {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    line-height: 2rem;
+}
+
+#main-info > #important > div:first-of-type {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#main-info > #important > #location {
+    font-style: italic;
+    font-weight: bolder;
+}
