@@ -13,7 +13,7 @@ urlpatterns = [
     path('profile/update/', update_profile, name='update-profile'),
     path('change-password/', change_password, name='change-password'),
     path('update-relationship/<str:id>/', update_relationship, name='relationship'),
-    path('subscriptions/<str:id>/', user_subscriptions, name='subscriptions'),
-    path('followers/<str:id>/', user_followers, name='followers')
-
+    path('subscriptions/<str:id>/', get_user_subscriptions, name='subscriptions'),
+    path('followers/<str:id>/', get_user_followers, name='followers'),
+    path('custom-user/<str:id>/', get_custom_user, name='custom-user')
 ]
