@@ -5,6 +5,7 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Meta } = Card;
 
@@ -18,13 +19,15 @@ const UserCard = ({ user }) => {
         <EllipsisOutlined key="ellipsis" />,
       ]}
     >
-      <Meta
-        avatar={
-          <Avatar src={`${process.env.REACT_APP_API_URL}${user.photo}`} />
-        }
-        title={user.first_name}
-        description={user.description}
-      />
+      <Link to={`user/${user.id}`}>
+        <Meta
+          avatar={
+            <Avatar src={`${process.env.REACT_APP_API_URL}${user.photo}`} />
+          }
+          title={user.first_name}
+          description={user.description}
+        />
+      </Link>
     </Card>
   );
 };
