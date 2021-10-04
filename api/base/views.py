@@ -1,19 +1,14 @@
-from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, update_session_auth_hash
-from rest_framework.decorators import api_view, permission_classes
-from .forms import UserForm, CustomUserRegisterForm, LoginForm, CustomUserForm
-from rest_framework import status
-from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
-from .models import CustomUser
-from django.contrib.auth.models import User
 from base.serializers import UserSerializer, CustomUserSerializer, UserSerializerWithToken
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .models import CustomUser
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
