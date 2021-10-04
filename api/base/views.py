@@ -161,3 +161,9 @@ def get_user_followers(request, id):
     serializer = CustomUserSerializer(followers, many=True)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def get_custom_user(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    serializer = CustomUserSerializer(user, many=False)
+    return Response(serializer.data)
