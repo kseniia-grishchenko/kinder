@@ -1,5 +1,6 @@
-from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.urls import path
+
 from .views import *
 
 
@@ -8,7 +9,7 @@ urlpatterns = [
     path('login/', MyTokenObtainPairView.as_view(), name='login'),
     path('register/', register_user, name='register'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('users/<str:id>/', get_user_profile, name='user-profile'),
+    path('user/<str:id>/', get_user_profile, name='user-profile'),
     path('profile/', get_my_profile, name='my-profile'),
     path('profile/update/', update_profile, name='update-profile'),
     path('change-password/', change_password, name='change-password'),
