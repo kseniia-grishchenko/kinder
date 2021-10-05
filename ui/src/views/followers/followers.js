@@ -5,25 +5,22 @@ import "./followers.css";
 
 const Followers = ({ match }) => {
   const [followers, setFollowers] = useState([]);
-  const userInfo = JSON.parse(localStorage.getItem("user"));
   const userId = match.params.id;
 
   useEffect(() => {
     let cleanupFunction = false;
 
     const getFollowers = async () => {
-      if (userInfo) {
-        const { data: userFollowers } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/followers/${userId}/`
-        );
-        if (!cleanupFunction) setFollowers(userFollowers);
-      }
+      const { data: userFollowers } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/followers/${userId}/`
+      );
+      if (!cleanupFunction) setFollowers(userFollowers);
     };
 
     getFollowers().catch((err) => console.log(err));
 
     return () => (cleanupFunction = true);
-  }, [userId, userInfo]);
+  }, [userId]);
 
   return (
     <div id={"followers"}>
