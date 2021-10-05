@@ -5,24 +5,21 @@ import "./subscriptions.css";
 
 const Subscriptions = ({ match }) => {
   const [subscriptions, setSubscriptions] = useState([]);
-  const userInfo = JSON.parse(localStorage.getItem("user"));
   const userId = match.params.id;
 
   useEffect(() => {
     let cleanupFunction = false;
 
     const getSubscriptions = async () => {
-      if (userInfo) {
-        const { data: userSubscriptions } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/subscriptions/${userId}/`
-        );
-        if (!cleanupFunction) setSubscriptions(userSubscriptions);
-      }
+      const { data: userSubscriptions } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/subscriptions/${userId}/`
+      );
+      if (!cleanupFunction) setSubscriptions(userSubscriptions);
     };
 
     getSubscriptions().catch((err) => console.log(err));
     return () => (cleanupFunction = true);
-  }, [userId, userInfo]);
+  }, [userId]);
 
   return (
     <div id={"subscriptions"}>
