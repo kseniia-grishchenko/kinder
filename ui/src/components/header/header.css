@@ -1,7 +1,6 @@
 .ant-page-header-content,
 .ant-page-header-content > #user-info,
-.ant-page-header-content > #relations
-{
+.ant-page-header-content > #relations {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,11 +20,3 @@
 #user-info, #relations {
     gap: 15px;
 }
-
-#relations > button {
-    color: var(--app-color);
-    background-color: var(--app-bg-4);
-    border: transparent;
-    border-radius: 10px;
-}
-

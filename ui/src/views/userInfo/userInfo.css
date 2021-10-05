@@ -8,6 +8,7 @@
     flex-direction: column;
     padding: 10px;
     line-height: 2rem;
+    width: 100%;
 }
 
 #main-info > #important > div:first-of-type {
@@ -18,4 +19,13 @@
 #main-info > #important > #location {
     font-style: italic;
     font-weight: bolder;
+}
+
+#important > #subscriptions-followers {
+    display: flex;
+    justify-content: space-between;
+}
+
+#important > #subscriptions-followers > div:last-of-type > button {
+    margin: 0 5px;
 }
