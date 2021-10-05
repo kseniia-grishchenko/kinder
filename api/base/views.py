@@ -57,7 +57,7 @@ def list_all(request):
 @api_view(['GET'])
 def get_user_profile(request, id):
     try:
-        custom_user = CustomUser.objects.select_related('user').get(id=id)
+        custom_user = CustomUser.objects.select_related('user').get(user_id=id)
         serializer = CustomUserSerializer(custom_user, many=False)
         if request.user.is_authenticated:
             current_user = CustomUser.objects.select_related('user').get(user=request.user)
