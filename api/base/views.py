@@ -1,19 +1,14 @@
-from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, update_session_auth_hash
-from rest_framework.decorators import api_view, permission_classes
-from .forms import UserForm, CustomUserRegisterForm, LoginForm, CustomUserForm
-from rest_framework import status
-from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
-from .models import CustomUser
-from django.contrib.auth.models import User
 from base.serializers import UserSerializer, CustomUserSerializer, UserSerializerWithToken
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .models import CustomUser
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -62,8 +57,7 @@ def list_all(request):
 @api_view(['GET'])
 def get_user_profile(request, id):
     try:
-        user = User.objects.get(id=id)
-        custom_user = CustomUser.objects.select_related('user').get(user=user)
+        custom_user = CustomUser.objects.select_related('user').get(user_id=id)
         serializer = CustomUserSerializer(custom_user, many=False)
         if request.user.is_authenticated:
             current_user = CustomUser.objects.select_related('user').get(user=request.user)
@@ -91,25 +85,26 @@ def update_profile(request):
     user = request.user
 
     data = request.data
+    if data:
+        user.username = data.get('username') or request.user.username
+        user.email = data.get('email') or request.user.email
 
-    user.username = data['username'] or request.user.username
-    user.email = data['email'] or request.user.email
+        custom_user = CustomUser.objects.select_related('user').get(user=user)
+        custom_user.first_name = data.get('username') or custom_user.first_name
+        custom_user.sex = data.get('sex') or custom_user.sex
+        custom_user.location = data.get('location') or custom_user.location
+        custom_user.budget = data.get('budget') or custom_user.budget
+        custom_user.description = data.get('description') or custom_user.description
+        custom_user.contact = data.get('contact') or custom_user.contact
 
-    custom_user = CustomUser.objects.select_related('user').get(user=user)
-    custom_user.first_name = data['first_name'] or custom_user.first_name
-    custom_user.sex = data['sex'] or custom_user.sex
-    custom_user.location = data['location'] or custom_user.location
-    custom_user.budget = data['budget'] or custom_user.budget
-    custom_user.description = data['description'] or custom_user.description
-    custom_user.contact = data['contact'] or custom_user.contact
+        serializer = CustomUserSerializer(custom_user, many=False, partial=True)
 
-    serializer = CustomUserSerializer(custom_user, many=False, partial=True)
-    if data['password'] != '':
-        user.password = make_password(data['password'])
-
-    user.save()
-    custom_user.save()
-    return Response(serializer.data)
+        user.save()
+        custom_user.save()
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'Nothing to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 def change_password(request):
@@ -152,7 +147,7 @@ def update_relationship(request, id):
 
 
 @api_view(['GET'])
-def user_subscriptions(request, id):
+def get_user_subscriptions(request, id):
     user = CustomUser.objects.get(user_id=id)
     subscriptions = user.subscriptions.all()
     serializer = CustomUserSerializer(subscriptions, many=True)
@@ -160,9 +155,15 @@ def user_subscriptions(request, id):
 
 
 @api_view(['GET'])
-def user_followers(request, id):
+def get_user_followers(request, id):
     user = CustomUser.objects.get(user_id=id)
     followers = user.followers.all()
     serializer = CustomUserSerializer(followers, many=True)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def get_custom_user(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    serializer = CustomUserSerializer(user, many=False)
+    return Response(serializer.data)
