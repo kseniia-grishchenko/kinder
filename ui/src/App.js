@@ -7,6 +7,7 @@ import Login from "./views/login/login";
 import Subscriptions from "./views/subscriptions/subscriptions";
 import Followers from "./views/followers/followers";
 import UserInfo from "./views/userInfo/userInfo";
+import Profile from "./views/followers/profile/profile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/subscriptions/:id" component={Subscriptions} />
         <Route path="/followers/:id" component={Followers} />
         <Route path="/user/:id" component={UserInfo} />
+        <Route path="/profile/" component={Profile} />
       </Switch>
     </Router>
   );
