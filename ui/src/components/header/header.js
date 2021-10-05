@@ -1,19 +1,47 @@
-import React from "react";
-import { Avatar, Button, PageHeader } from "antd";
+import React, { useEffect, useState } from "react";
+import { Avatar, PageHeader } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "./header.css";
+import ButtonLink from "../button/button";
 
 const Header = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const history = useHistory();
+  const [customUser, setCustomUser] = useState();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    setInterval(() => {
+      setUser(JSON.parse(localStorage.getItem("user")) || null);
+      setCustomUser(JSON.parse(localStorage.getItem("customUser")) || null);
+    }, 1000);
+  });
+
+  const goHome = () => {
+    history.push("/");
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("customUser");
+  };
 
   return (
     <PageHeader>
       <div id={"user-info"}>
-        <Avatar size="large" icon={<UserOutlined />} />
-        {user?.username ? (
+        {customUser ? (
+          <Avatar
+            size="large"
+            src={`${process.env.REACT_APP_API_URL}${customUser.photo}`}
+            onClick={goHome}
+          />
+        ) : (
+          <Avatar size="large" icon={<UserOutlined />} onClick={goHome} />
+        )}
+
+        {customUser?.first_name ? (
           <div>
-            <Link to={"/profile"}>{user.username}</Link>
+            <Link to={"/profile"}>{customUser.first_name}</Link>
           </div>
         ) : (
           <div>
@@ -21,14 +49,17 @@ const Header = () => {
           </div>
         )}
       </div>
-      {user && (
+      {customUser && (
         <div id={"relations"}>
-          <Button>
-            <Link to={`/subscriptions/${user.id}`}>Subscriptions</Link>
-          </Button>
-          <Button>
-            <Link to={`/followers/${user.id}`}>Followers</Link>
-          </Button>
+          <ButtonLink
+            name={"Subscriptions"}
+            url={`/subscriptions/${customUser.user}`}
+          />
+          <ButtonLink
+            name={"Followers"}
+            url={`/followers/${customUser.user}`}
+          />
+          {user && <Link onClick={logoutHandler}>Log out</Link>}
         </div>
       )}
     </PageHeader>

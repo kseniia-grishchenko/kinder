@@ -7,11 +7,14 @@ const Home = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("user")) || null;
     const getUsers = async () => {
       const { data: users_from_db } = await axios.get(
         `${process.env.REACT_APP_API_URL}/users/`
       );
-      setUsers(users_from_db);
+      currentUser
+        ? setUsers(users_from_db.filter((user) => user.user !== currentUser.id))
+        : setUsers(users_from_db);
     };
 
     getUsers().catch((err) => console.log(err));
