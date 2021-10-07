@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 SEX_CHOICES = (
     ('Male', 'Male'),
@@ -11,7 +12,7 @@ SEX_CHOICES = (
 class CustomUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.TextField(blank=False, max_length=30)
-    age = models.IntegerField(null=True, default=18)
+    date_of_birth = models.DateField(blank=True, default=datetime.date(2002, 1, 1))
     sex = models.CharField(choices=SEX_CHOICES, default='Not chosen', max_length=20)
     location = models.CharField(max_length=50)
     contact = models.CharField(max_length=30)
