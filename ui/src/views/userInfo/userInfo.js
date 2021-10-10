@@ -3,10 +3,28 @@ import axios from "axios";
 import UserImage from "../../components/image/image";
 import "./userInfo.css";
 import ButtonLink from "../../components/button/button";
+import {Button} from "antd";
 
 const UserInfo = ({ match }) => {
   const [user, setUser] = useState();
   const userId = match.params.id;
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")) || null);
+  }, []);
+
+  const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+  const subscribe = async() => {
+      const { data: user_from_db } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/update-relationship/${userId}/`,
+          config
+      );
+    };
 
   useEffect(() => {
     let cleanupFunction = false;
@@ -48,6 +66,13 @@ const UserInfo = ({ match }) => {
           </div>
         </div>
       )}
+      <div id={"important"}>
+        <div id={"subscribe-unsubscribe"}>
+          <Button onClick={subscribe}>
+                Subscribe
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
