@@ -83,6 +83,7 @@ def get_my_profile(request):
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     user = request.user
+    print('Hello')
 
     data = request.data
     if data:
