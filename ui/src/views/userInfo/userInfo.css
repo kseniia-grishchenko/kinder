@@ -29,3 +29,9 @@
 #important > #subscriptions-followers > div:last-of-type > button {
     margin: 0 5px;
 }
+
+#important > #subscribe-unsubscribe > button {
+    margin: 0 5px;
+    background-color: #33c4e3;
+    border-color: white;
+}
