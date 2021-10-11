@@ -7,7 +7,7 @@ import Login from "./views/login/login";
 import Subscriptions from "./views/subscriptions/subscriptions";
 import Followers from "./views/followers/followers";
 import UserInfo from "./views/userInfo/userInfo";
-import Profile from "./views/followers/profile/profile";
+import Profile from "./views/profile/profile";
 
 function App() {
   return (
