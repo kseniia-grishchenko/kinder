@@ -6,12 +6,12 @@ import ButtonLink from "../../components/button/button";
 import {Button} from "antd";
 
 const UserInfo = ({ match }) => {
-  const [user, setUser] = useState();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const customUser = JSON.parse(localStorage.getItem("customUser"));
+  const [currentUser, setCurrentUser] = useState();
   const userId = match.params.id;
-
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")) || null);
-  }, []);
+  const [subscribed, setSubscribed] = useState(false);
+  const [followed, setFollowed] = useState(false);
 
   const config = {
       headers: {
