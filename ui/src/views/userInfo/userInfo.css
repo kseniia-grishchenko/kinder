@@ -30,8 +30,8 @@
     margin: 0 5px;
 }
 
-#important > #subscribe-unsubscribe > button {
-    margin: 0 5px;
+.subscribe > button {
+    margin: 5px 0;
     background-color: #33c4e3;
     border-color: white;
 }
