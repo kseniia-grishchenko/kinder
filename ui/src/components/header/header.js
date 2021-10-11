@@ -24,6 +24,7 @@ const Header = () => {
   const logoutHandler = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("customUser");
+    goHome();
   };
 
   return (
@@ -59,7 +60,11 @@ const Header = () => {
             name={"Followers"}
             url={`/followers/${customUser.user}`}
           />
-          {user && <Link onClick={logoutHandler}>Log out</Link>}
+          {user && (
+            <div id={"logout"} onClick={logoutHandler}>
+              Log out
+            </div>
+          )}
         </div>
       )}
     </PageHeader>
