@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input } from "antd";
 import "./login.css";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Modal from "antd/es/modal/Modal";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -42,7 +43,10 @@ const Login = () => {
       );
       localStorage.setItem("customUser", JSON.stringify(customUser));
     } catch (error) {
-      console.log(error);
+      Modal.error({
+        title: "Something went wrong",
+        content: error.response.data.detail,
+      });
     }
   };
 
@@ -80,6 +84,7 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
+      <Link to={"/register"}>Are you a new user? Register here</Link>
     </div>
   );
 };
