@@ -1,10 +1,10 @@
-from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.urls import path
+
 from .views import *
 
-
 urlpatterns = [
-    path('', list_all, name='users'),
+    path('users/', list_all, name='users'),
     path('login/', MyTokenObtainPairView.as_view(), name='login'),
     path('register/', register_user, name='register'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),

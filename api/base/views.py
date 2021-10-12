@@ -29,15 +29,13 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @api_view(['POST'])
 def register_user(request):
     data = request.data
-
     try:
         user = User.objects.create(
             username=data['username'],
             email=data['email'],
             password=make_password(data['password'])
         )
-        custom_user = CustomUser.objects.get(user=user)
-        serializer = CustomUserSerializer(custom_user, many=False)
+        serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
     except:
         message = {'detail': 'User already exists'}
@@ -57,8 +55,7 @@ def list_all(request):
 @api_view(['GET'])
 def get_user_profile(request, id):
     try:
-        user = User.objects.get(id=id)
-        custom_user = CustomUser.objects.select_related('user').get(user=user)
+        custom_user = CustomUser.objects.select_related('user').get(user_id=id)
         serializer = CustomUserSerializer(custom_user, many=False)
         if request.user.is_authenticated:
             current_user = CustomUser.objects.select_related('user').get(user=request.user)
@@ -84,27 +81,29 @@ def get_my_profile(request):
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     user = request.user
+    print('Hello')
 
     data = request.data
+    if data:
+        user.username = data.get('username') or request.user.username
+        user.email = data.get('email') or request.user.email
 
-    user.username = data['username'] or request.user.username
-    user.email = data['email'] or request.user.email
+        custom_user = CustomUser.objects.select_related('user').get(user=user)
+        custom_user.first_name = data.get('username') or custom_user.first_name
+        custom_user.sex = data.get('sex') or custom_user.sex
+        custom_user.location = data.get('location') or custom_user.location
+        custom_user.budget = data.get('budget') or custom_user.budget
+        custom_user.description = data.get('description') or custom_user.description
+        custom_user.contact = data.get('contact') or custom_user.contact
 
-    custom_user = CustomUser.objects.select_related('user').get(user=user)
-    custom_user.first_name = data['first_name'] or custom_user.first_name
-    custom_user.sex = data['sex'] or custom_user.sex
-    custom_user.location = data['location'] or custom_user.location
-    custom_user.budget = data['budget'] or custom_user.budget
-    custom_user.description = data['description'] or custom_user.description
-    custom_user.contact = data['contact'] or custom_user.contact
+        serializer = CustomUserSerializer(custom_user, many=False, partial=True)
 
-    serializer = CustomUserSerializer(custom_user, many=False, partial=True)
-    if data['password'] != '':
-        user.password = make_password(data['password'])
-
-    user.save()
-    custom_user.save()
-    return Response(serializer.data)
+        user.save()
+        custom_user.save()
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'Nothing to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 def change_password(request):
