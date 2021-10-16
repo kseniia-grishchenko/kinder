@@ -1,0 +1,7 @@
+img.user-image {
+    object-fit: contain;
+}
+
+img, .ant-image-mask {
+    border-radius: 60px;
+}
