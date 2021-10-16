@@ -1,6 +1,6 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./components/header/header";
 import Home from "./views/home/home";
 import Login from "./views/login/login";
