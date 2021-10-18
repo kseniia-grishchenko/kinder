@@ -12,7 +12,7 @@ const Followers = ({ match }) => {
 
     const getFollowers = async () => {
       const { data: userFollowers } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/followers/${userId}/`
+        `/followers/${userId}/`
       );
       if (!cleanupFunction) setFollowers(userFollowers);
     };

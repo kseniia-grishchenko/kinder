@@ -12,7 +12,7 @@ const Subscriptions = ({ match }) => {
 
     const getSubscriptions = async () => {
       const { data: userSubscriptions } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/subscriptions/${userId}/`
+        `/subscriptions/${userId}/`
       );
       if (!cleanupFunction) setSubscriptions(userSubscriptions);
     };

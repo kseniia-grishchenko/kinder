@@ -8,7 +8,7 @@ const UserImage = ({ url }) => {
       className={"user-image"}
       height={250}
       width={300}
-      src={`${process.env.REACT_APP_API_URL}${url}`}
+      src={`${url}`}
     />
   );
 };

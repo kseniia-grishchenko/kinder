@@ -11,7 +11,7 @@ const UserCard = ({ user }) => {
         <Meta
           avatar={
             <Avatar
-              src={`${process.env.REACT_APP_API_URL}${user.photo}`}
+              src={`${user.photo}`}
               size="large"
             />
           }

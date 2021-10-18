@@ -20,7 +20,7 @@ const UserInfo = ({ match }) => {
 
     const getUser = async () => {
       const { data: user_from_db } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/${userId}/`
+        `/user/${userId}/`
       );
 
       setSubscribed(isSubscribed(customUser?.id, user_from_db));
@@ -41,7 +41,7 @@ const UserInfo = ({ match }) => {
       },
     };
     const { data: updated_user } = await axios.post(
-      `${process.env.REACT_APP_API_URL}/update-relationship/${userId}/`,
+      `/update-relationship/${userId}/`,
       {},
       config
     );

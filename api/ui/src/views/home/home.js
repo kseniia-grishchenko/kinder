@@ -10,7 +10,7 @@ const Home = () => {
     const currentUser = JSON.parse(localStorage.getItem("user")) || null;
     const getUsers = async () => {
       const { data: users_from_db } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/`
+        `/users/`
       );
       currentUser
         ? setUsers(users_from_db.filter((user) => user.user !== currentUser.id))

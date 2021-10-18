@@ -16,7 +16,7 @@ const Profile = () => {
     if (user) {
       const getCustomUser = async () => {
         const { data: customUserFromDb } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/custom-user/${user.id}/`
+          `/custom-user/${user.id}/`
         );
         setCustomUser(customUserFromDb);
       };
@@ -42,7 +42,7 @@ const Profile = () => {
 
     try {
       await axios.put(
-        `${process.env.REACT_APP_API_URL}/profile/update/`,
+        `/profile/update/`,
         {
           username,
           location,

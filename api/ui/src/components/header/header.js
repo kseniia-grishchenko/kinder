@@ -33,7 +33,7 @@ const Header = () => {
         {customUser ? (
           <Avatar
             size="large"
-            src={`${process.env.REACT_APP_API_URL}${customUser.photo}`}
+            src={`${customUser.photo}`}
             onClick={goHome}
           />
         ) : (

@@ -31,7 +31,7 @@ const Login = () => {
 
     try {
       const { data: user } = await axios.post(
-        `${process.env.REACT_APP_API_URL}/login/`,
+        `/login/`,
         { username: username, password: password },
         config
       );
@@ -39,7 +39,7 @@ const Login = () => {
       setUser(user);
 
       const { data: customUser } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/custom-user/${user.id}/`
+        `/custom-user/${user.id}/`
       );
       localStorage.setItem("customUser", JSON.stringify(customUser));
     } catch (error) {
