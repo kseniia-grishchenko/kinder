@@ -107,7 +107,6 @@ const Profile = () => {
           <Form.Item label="Description" name={"description"}>
             <TextArea defaultValue={customUser.description} />
           </Form.Item>
-          <Map />
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               Update
@@ -115,6 +114,7 @@ const Profile = () => {
           </Form.Item>
         </Form>
       )}
+      <Map />
     </div>
   );
 };
