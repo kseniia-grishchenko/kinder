@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Modal from "antd/es/modal/Modal";
+import Map from "../../components/map/map";
 
 const Profile = () => {
   const [customUser, setCustomUser] = useState();
@@ -106,6 +107,7 @@ const Profile = () => {
           <Form.Item label="Description" name={"description"}>
             <TextArea defaultValue={customUser.description} />
           </Form.Item>
+          <Map />
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               Update

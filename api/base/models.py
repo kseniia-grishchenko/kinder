@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 
 SEX_CHOICES = (
     ('Male', 'Male'),
@@ -23,6 +23,8 @@ class CustomUser(models.Model):
     budget = models.IntegerField(blank=True, null=True)
     subscriptions = models.ManyToManyField("self", related_name='user_subscriptions', blank=True, symmetrical=False)
     followers = models.ManyToManyField("self", related_name='user_followers', blank=True, symmetrical=False)
+    favorite_places = ArrayField(ArrayField(models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15),
+                                            size=2, default=list), size=5, blank=True, default=list)
 
     def __str__(self):
         return self.first_name
