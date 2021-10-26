@@ -40,7 +40,6 @@ const Profile = () => {
         Authorization: `Bearer ${user.token}`
       }
     }
-
     try {
       await axios.put(
         '/profile/update/',
@@ -54,14 +53,9 @@ const Profile = () => {
         },
         config
       )
-      Modal.success({
-        content: 'User info successfully updated'
-      })
+      alert('User info successfully updated')
     } catch (error) {
-      Modal.error({
-        title: 'Something went wrong',
-        content: error.response.data.detail
-      })
+      alert(error.response.data.detail)
     }
   }
 
@@ -77,35 +71,41 @@ const Profile = () => {
           }}
           layout='horizontal'
           initialValues={{
-            size: 'default'
+            size: 'default',
+            username: customUser.first_name,
+            location: customUser.location,
+            sex: customUser.sex,
+            contact: customUser.contact,
+            budget: Number(customUser.budget),
+            description: customUser.description,
           }}
           size='default'
           onFinish={onFinish}
         >
           <Form.Item label='Name' name='username'>
-            <Input defaultValue={customUser.first_name} />
+            <Input/>
           </Form.Item>
           <Form.Item label='Location' name='location'>
-            <Input defaultValue={customUser.location} />
+            <Input/>
           </Form.Item>
           <Form.Item label='Sex' name='sex'>
-            <Select defaultValue={customUser.sex}>
+            <Select>
               <Select.Option value='Female'>Female</Select.Option>
               <Select.Option value='Male'>Male</Select.Option>
               <Select.Option value='Not chosen'>Not chosen</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item label='Contact' name='contact'>
-            <Input defaultValue={customUser.contact} />
+            <Input/>
           </Form.Item>
           <Form.Item label='Date of birth' name='date_of_birth'>
             <DatePicker />
           </Form.Item>
           <Form.Item label='Budget' name='budget'>
-            <InputNumber defaultValue={Number(customUser.budget)} />
+            <InputNumber/>
           </Form.Item>
           <Form.Item label='Description' name='description'>
-            <TextArea defaultValue={customUser.description} />
+            <TextArea/>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type='primary' htmlType='submit'>

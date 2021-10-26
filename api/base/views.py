@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from decimal import Decimal
+import json
 
 from .models import CustomUser
 
@@ -202,11 +203,13 @@ def update_map(request, id):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_map(request, id):
+    print(request.headers['Data'])
     if request.user.id != int(id):
         return
     user = CustomUser.objects.get(user_id=id)
-    data = request.data
+    data = json.loads(request.headers['Data'])
     fav_places = user.favorite_places
+
     latitude = Decimal(data['latitude'])
     longitude = Decimal(data['longitude'])
     if [latitude, longitude] in fav_places:

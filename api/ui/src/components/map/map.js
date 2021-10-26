@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { Button } from 'antd'
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng
 } from 'react-places-autocomplete'
-import Modal from 'antd/es/modal/Modal'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
+import { CloseCircleOutlined } from '@ant-design/icons'
+import './map.css'
 
 const Map = ({}) => {
   const [address, setAddress] = React.useState('')
-  const [setCustomUser] = useState()
   const [user, setUser] = useState()
   const [coordinates, setCoordinates] = React.useState({
     lat: null,
@@ -25,19 +25,6 @@ const Map = ({}) => {
   }, [])
 
   useEffect(() => {
-    if (user) {
-      const getCustomUser = async () => {
-        const { data: customUserFromDb } = await axios.get(
-            `/custom-user/${user.id}/`
-        )
-        setCustomUser(customUserFromDb)
-      }
-
-      getCustomUser().catch((err) => console.log(err))
-    }
-  }, [user])
-
-  useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('user')) || null
     const getPlaces = async () => {
       const { data: places_from_db } = await axios.get(
@@ -45,8 +32,8 @@ const Map = ({}) => {
       )
       const { favorite_places: favoritePlaces } = places_from_db
       setPlaces(favoritePlaces.map(place => ({
-        lat: Number(place[0]),
-        lng: Number(place[1])
+        lat: parseFloat(place[0]).toFixed(15),
+        lng: parseFloat(place[1]).toFixed(15)
       })))
     }
 
@@ -81,32 +68,18 @@ const Map = ({}) => {
           config
       )
       const { favorite_places: favoritePlaces } = places_from_db
+      console.log(favoritePlaces)
       setPlaces(favoritePlaces.map(place => ({
-        lat: Number(place[0]),
-        lng: Number(place[1])
+        lat: parseFloat(place[0]).toFixed(15),
+        lng: parseFloat(place[1]).toFixed(15)
       })))
-      Modal.success({
-        content: 'User favorite places successfully updated'
-      })
+      alert('User favorite places successfully updated');
     } catch (error) {
-      Modal.error({
-        title: 'Something went wrong',
-        content: error.response.data.detail
-      })
+      alert(error.response.data.detail)
     }
   }
 
-  const containerStyle = {
-    width: '400px',
-    height: '400px'
-  }
-
-  const center = {
-    lat: 50.4501,
-    lng: 30.5234
-  }
-
-  const MyComponent = () => {
+  const MapConnected = () => {
     const { isLoaded } = useJsApiLoader({
       id: 'google-map-script',
       googleMapsApiKey: 'REACT_APP_GOOGLE_API_KEY'
@@ -124,19 +97,51 @@ const Map = ({}) => {
   }, [])
 
   const markPlaces = () => {
-    if (places) {
-      places.forEach(place => {
-        new google.maps.Marker({
-          position: place,
-          map,
-          title: 'Favorite place!'
-        })
+    places.forEach(place => {
+      new google.maps.Marker({
+        position: {
+          lat: Number(place.lat),
+          lng: Number(place.lng)
+        },
+        map,
+        title: 'Favorite place!'
       })
+    })
+  }
+
+  const deletePlace = async (index) => {
+    const place = places[index]
+    console.log(place)
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+        data: JSON.stringify({
+          latitude: place.lat,
+          longitude: place.lng
+        })
+      }
     }
+    try {
+      const { data: places_from_db } = await axios.delete(
+          `/delete-map/${user.id}/`,
+          config,
+      )
+      const { favorite_places: favoritePlaces } = places_from_db
+      console.log(favoritePlaces)
+      setPlaces(favoritePlaces.map(place => ({
+        lat: parseFloat(place[0]).toFixed(15),
+        lng: parseFloat(place[1]).toFixed(15)
+      })))
+      alert('Successfully deleted!');
+    } catch (error) {
+      alert(error.response.data.detail)
+    }
+    
   }
 
   return (
-    <div id='main-info'>
+    <div id='map-info'>
       <div>
         <PlacesAutocomplete
           value={address}
@@ -144,7 +149,8 @@ const Map = ({}) => {
           onSelect={handleSelect}
         >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-            <div>
+            <div id='input-place'>
+              <div style={{margin: '0 50px'}}><strong>You can add your favorite places here(up to 5)</strong></div>
               <input {...getInputProps({ placeholder: 'Type address' })} />
 
               <div>
@@ -163,8 +169,13 @@ const Map = ({}) => {
                 })}
               </div>
               <Button type='primary' onClick={finish}>
-                Update place
+                Add place
               </Button>
+              {places.map((place, index) => (
+                <div style={{display: 'flex', justifyContent: 'space-between'}} key={index}><div>Lat: {place.lat} lng: {place.lng}</div>
+                <CloseCircleOutlined onClick={() => deletePlace(index)}/>
+                </div>
+              ))}
             </div>
           )}
         </PlacesAutocomplete>
@@ -176,11 +187,21 @@ const Map = ({}) => {
       {/*  {places && places.map(place => <div>{place.lat} {place.lng}</div>)} */}
       {/* </div> */}
       <div>
-        {{ MyComponent }
+        {{ MapConnected }
           ? (
             <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center}
+              mapContainerStyle={    
+              {
+              width: '800px',
+              height: '400px'
+              }
+            }
+              center={
+                {
+                  lat: 50.4501,
+                  lng: 30.5234
+                }
+              }
               zoom={10}
               onLoad={onLoad}
               onUnmount={onUnmount}
