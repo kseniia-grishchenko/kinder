@@ -68,7 +68,6 @@ const Map = ({}) => {
           config
       )
       const { favorite_places: favoritePlaces } = places_from_db
-      console.log(favoritePlaces)
       setPlaces(favoritePlaces.map(place => ({
         lat: parseFloat(place[0]).toFixed(15),
         lng: parseFloat(place[1]).toFixed(15)
@@ -111,7 +110,6 @@ const Map = ({}) => {
 
   const deletePlace = async (index) => {
     const place = places[index]
-    console.log(place)
     const config = {
       headers: {
         'Content-type': 'application/json',
@@ -128,7 +126,6 @@ const Map = ({}) => {
           config,
       )
       const { favorite_places: favoritePlaces } = places_from_db
-      console.log(favoritePlaces)
       setPlaces(favoritePlaces.map(place => ({
         lat: parseFloat(place[0]).toFixed(15),
         lng: parseFloat(place[1]).toFixed(15)

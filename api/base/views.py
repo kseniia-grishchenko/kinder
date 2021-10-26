@@ -203,7 +203,6 @@ def update_map(request, id):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_map(request, id):
-    print(request.headers['Data'])
     if request.user.id != int(id):
         return
     user = CustomUser.objects.get(user_id=id)
