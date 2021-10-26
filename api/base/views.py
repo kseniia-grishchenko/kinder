@@ -217,3 +217,15 @@ def delete_map(request, id):
     else:
         message = {'detail': 'Such place does not exit in your list!'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_all_maps(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    user.favorite_places = [[]]
+    user.save()
+    serializer = MapSerializer(user, many=False)
+    return Response(serializer.data)
