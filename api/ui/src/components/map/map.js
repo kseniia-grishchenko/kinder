@@ -8,6 +8,7 @@ import PlacesAutocomplete, {
 import Modal from "antd/es/modal/Modal";
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
+
 const Map = ({}) => {
   const [address, setAddress] = React.useState("");
   const [setCustomUser] = useState();
@@ -107,7 +108,7 @@ const Map = ({}) => {
     lng: 30.5234
   };
 
-  function MyComponent() {
+  const MyComponent = () => {
     const {isLoaded} = useJsApiLoader({
       id: 'google-map-script',
       googleMapsApiKey: "REACT_APP_GOOGLE_API_KEY"
@@ -136,8 +137,6 @@ const Map = ({}) => {
     }
   }
 
-
-
     return (
         <div id={"main-info"}>
           <div>
@@ -148,9 +147,6 @@ const Map = ({}) => {
             >
               {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
                   <div>
-                    <p>Latitude: {coordinates.lat}</p>
-                    <p>Longitude: {coordinates.lng}</p>
-
                     <input {...getInputProps({placeholder: "Type address"})} />
 
                     <div>
@@ -175,12 +171,12 @@ const Map = ({}) => {
               )}
             </PlacesAutocomplete>
           </div>
-          <div>
-            User`s favorite places:
-          </div>
-          <div>
-            {places && places.map(place => <div>{place.lat} {place.lng}</div>)}
-          </div>
+          {/*<div>*/}
+          {/*  User`s favorite places:*/}
+          {/*</div>*/}
+          {/*<div>*/}
+          {/*  {places && places.map(place => <div>{place.lat} {place.lng}</div>)}*/}
+          {/*</div>*/}
           <div>
             {{MyComponent} ? (
             <GoogleMap
