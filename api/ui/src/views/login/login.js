@@ -1,92 +1,92 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input } from "antd";
-import "./login.css";
-import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
-import Modal from "antd/es/modal/Modal";
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Input } from 'antd'
+import './login.css'
+import axios from 'axios'
+import { Link, useHistory } from 'react-router-dom'
+import Modal from 'antd/es/modal/Modal'
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState();
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState()
 
-  const history = useHistory();
+  const history = useHistory()
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")) || null);
-  }, []);
+    setUser(JSON.parse(localStorage.getItem('user')) || null)
+  }, [])
 
   useEffect(() => {
     if (user) {
-      history.push("/");
+      history.push('/')
     }
-  }, [history, user]);
+  }, [history, user])
 
   const onFinish = async () => {
     const config = {
       headers: {
-        "Content-type": "application/json",
-      },
-    };
+        'Content-type': 'application/json'
+      }
+    }
 
     try {
       const { data: user } = await axios.post(
-        `/login/`,
+        '/login/',
         { username: username, password: password },
         config
-      );
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
+      )
+      localStorage.setItem('user', JSON.stringify(user))
+      setUser(user)
 
       const { data: customUser } = await axios.get(
         `/custom-user/${user.id}/`
-      );
-      localStorage.setItem("customUser", JSON.stringify(customUser));
+      )
+      localStorage.setItem('customUser', JSON.stringify(customUser))
     } catch (error) {
       Modal.error({
-        title: "Something went wrong",
-        content: error.response.data.detail,
-      });
+        title: 'Something went wrong',
+        content: error.response.data.detail
+      })
     }
-  };
+  }
 
   return (
-    <div className={"login"}>
+    <div className='login'>
       <Form
-        name="basic"
+        name='basic'
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        autoComplete="off"
+        autoComplete='off'
       >
         <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          label='Username'
+          name='username'
+          rules={[{ required: true, message: 'Please input your username!' }]}
           onChange={(e) => setUsername(e.target.value)}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          label='Password'
+          name='password'
+          rules={[{ required: true, message: 'Please input your password!' }]}
           onChange={(e) => setPassword(e.target.value)}
         >
           <Input.Password />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             Submit
           </Button>
         </Form.Item>
       </Form>
-      <Link to={"/register"}>Are you a new user? Register here</Link>
+      <Link to='/register'>Are you a new user? Register here</Link>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

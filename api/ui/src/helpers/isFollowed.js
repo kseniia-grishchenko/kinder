@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const isFollowed = (id, user) => {
-  return user.subscriptions.includes(id);
-};
+  return user.subscriptions.includes(id)
+}
 
-export default isFollowed;
+export default isFollowed
