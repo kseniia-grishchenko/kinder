@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import CustomUser, Tag
+from .models import CustomUser, Tag, Place
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class UserPlacesSerializer(serializers.ModelSerializer):
 class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Tag
+        model = Place
         fields = '__all__'
 
 
