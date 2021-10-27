@@ -1,4 +1,4 @@
-from base.serializers import UserSerializer, CustomUserSerializer, UserSerializerWithToken
+from base.serializers import UserSerializer, CustomUserSerializer, UserSerializerWithToken, MapSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from decimal import Decimal
+import json
 
 from .models import CustomUser
 
@@ -165,4 +167,67 @@ def get_user_followers(request, id):
 def get_custom_user(request, id):
     user = CustomUser.objects.get(user_id=id)
     serializer = CustomUserSerializer(user, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_map_info(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    serializer = MapSerializer(user, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_map(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    data = request.data
+    fav_places = user.favorite_places
+    latitude = Decimal(data['latitude'])
+    longitude = Decimal(data['longitude'])
+    if len(fav_places) < 5:
+        if [latitude, longitude] in fav_places:
+            message = {'detail': 'This place is already in your favorites!'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        fav_places.append([latitude, longitude])
+        user.save()
+        serializer = MapSerializer(user, many=False)
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'You can add only 5 favorite places!'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_map(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    data = json.loads(request.headers['Data'])
+    fav_places = user.favorite_places
+
+    latitude = Decimal(data['latitude'])
+    longitude = Decimal(data['longitude'])
+    if [latitude, longitude] in fav_places:
+        fav_places.remove([latitude, longitude])
+        user.save()
+        serializer = MapSerializer(user, many=False)
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'Such place does not exit in your list!'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_all_maps(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    user.favorite_places = [[]]
+    user.save()
+    serializer = MapSerializer(user, many=False)
     return Response(serializer.data)

@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import Modal from "antd/es/modal/Modal";
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Button, DatePicker, Form, Input, InputNumber, Select } from 'antd'
+import TextArea from 'antd/es/input/TextArea'
+import Modal from 'antd/es/modal/Modal'
+import Map from '../../components/map/map'
 
 const Profile = () => {
-  const [customUser, setCustomUser] = useState();
-  const [user, setUser] = useState();
+  const [customUser, setCustomUser] = useState()
+  const [user, setUser] = useState()
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")) || null);
-  }, []);
+    setUser(JSON.parse(localStorage.getItem('user')) || null)
+  }, [])
 
   useEffect(() => {
     if (user) {
       const getCustomUser = async () => {
         const { data: customUserFromDb } = await axios.get(
           `/custom-user/${user.id}/`
-        );
-        setCustomUser(customUserFromDb);
-      };
+        )
+        setCustomUser(customUserFromDb)
+      }
 
-      getCustomUser().catch((err) => console.log(err));
+      getCustomUser().catch((err) => console.log(err))
     }
-  }, [user]);
+  }, [user])
 
   const onFinish = async ({
     username,
@@ -31,90 +32,91 @@ const Profile = () => {
     sex,
     budget,
     description,
-    contact,
+    contact
   }) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${user.token}`
+      }
+    }
     try {
       await axios.put(
-        `/profile/update/`,
+        '/profile/update/',
         {
           username,
           location,
           sex,
           budget,
           description,
-          contact,
+          contact
         },
         config
-      );
-      Modal.success({
-        content: "User info successfully updated",
-      });
+      )
+      alert('User info successfully updated')
     } catch (error) {
-      Modal.error({
-        title: "Something went wrong",
-        content: error.response.data.detail,
-      });
+      alert(error.response.data.detail)
     }
-  };
+  }
 
   return (
     <div>
       {customUser && (
         <Form
           labelCol={{
-            span: 4,
+            span: 4
           }}
           wrapperCol={{
-            span: 14,
+            span: 14
           }}
-          layout="horizontal"
+          layout='horizontal'
           initialValues={{
-            size: "default",
+            size: 'default',
+            username: customUser.first_name,
+            location: customUser.location,
+            sex: customUser.sex,
+            contact: customUser.contact,
+            budget: Number(customUser.budget),
+            description: customUser.description,
           }}
-          size="default"
+          size='default'
           onFinish={onFinish}
         >
-          <Form.Item label="Name" name={"username"}>
-            <Input defaultValue={customUser.first_name} />
+          <Form.Item label='Name' name='username'>
+            <Input/>
           </Form.Item>
-          <Form.Item label="Location" name={"location"}>
-            <Input defaultValue={customUser.location} />
+          <Form.Item label='Location' name='location'>
+            <Input/>
           </Form.Item>
-          <Form.Item label="Sex" name={"sex"}>
-            <Select defaultValue={customUser.sex}>
-              <Select.Option value="Female">Female</Select.Option>
-              <Select.Option value="Male">Male</Select.Option>
-              <Select.Option value="Not chosen">Not chosen</Select.Option>
+          <Form.Item label='Sex' name='sex'>
+            <Select>
+              <Select.Option value='Female'>Female</Select.Option>
+              <Select.Option value='Male'>Male</Select.Option>
+              <Select.Option value='Not chosen'>Not chosen</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Contact" name={"contact"}>
-            <Input defaultValue={customUser.contact} />
+          <Form.Item label='Contact' name='contact'>
+            <Input/>
           </Form.Item>
-          <Form.Item label="Date of birth" name={"date_of_birth"}>
+          <Form.Item label='Date of birth' name='date_of_birth'>
             <DatePicker />
           </Form.Item>
-          <Form.Item label="Budget" name={"budget"}>
-            <InputNumber defaultValue={Number(customUser.budget)} />
+          <Form.Item label='Budget' name='budget'>
+            <InputNumber/>
           </Form.Item>
-          <Form.Item label="Description" name={"description"}>
-            <TextArea defaultValue={customUser.description} />
+          <Form.Item label='Description' name='description'>
+            <TextArea/>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               Update
             </Button>
           </Form.Item>
         </Form>
       )}
+      <Map />
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

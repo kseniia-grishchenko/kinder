@@ -1,8 +1,8 @@
-import React from "react";
-import { Avatar, Card } from "antd";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { Avatar, Card } from 'antd'
+import { Link } from 'react-router-dom'
 
-const { Meta } = Card;
+const { Meta } = Card
 
 const UserCard = ({ user }) => {
   return (
@@ -12,7 +12,7 @@ const UserCard = ({ user }) => {
           avatar={
             <Avatar
               src={`${user.photo}`}
-              size="large"
+              size='large'
             />
           }
           title={user.first_name}
@@ -20,7 +20,7 @@ const UserCard = ({ user }) => {
         />
       </Link>
     </Card>
-  );
-};
+  )
+}
 
-export default UserCard;
+export default UserCard
