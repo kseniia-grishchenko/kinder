@@ -1,5 +1,5 @@
 from base.serializers import UserSerializer, CustomUserSerializer,\
-    UserSerializerWithToken, MapSerializer, TagSerializer
+    UserSerializerWithToken, MapSerializer, TagSerializer, TagsSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -264,13 +264,9 @@ def get_user_tags(request, id):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_tag(request, id):
-    if request.user.id != int(id):
-        return
-    user = CustomUser.objects.get(user_id=id)
+    user = CustomUser.objects.get(user_id=request.user.id)
     all_user_tags = user.tags.all()
-    data = request.data
-    tag_id = data['tag_id']
-    tag = Tag.objects.get(id=tag_id)
+    tag = Tag.objects.get(id=id)
     if tag in all_user_tags:
         user.tags.remove(tag)
         user.save()
@@ -279,3 +275,10 @@ def delete_tag(request, id):
     else:
         message = {'detail': 'Something went wrong!'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_all_tags(request):
+    tags = Tag.objects.all()
+    serializer = TagsSerializer(tags, many=True)
+    return Response(serializer.data)

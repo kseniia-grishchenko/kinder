@@ -23,4 +23,5 @@ urlpatterns = [
     path('add-tag/<str:id>/', add_tag, name='add-tag'),
     path('get-user-tags/<str:id>/', get_user_tags, name='get-user-tags'),
     path('delete-tag/<str:id>/', delete_tag, name='delete-tag'),
+    path('get-all-tags/', get_all_tags, name='get-all-tags'),
 ]
