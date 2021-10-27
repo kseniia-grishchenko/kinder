@@ -37,14 +37,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='UserTag',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.tag')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.customuser')),
-            ],
-        ),
-        migrations.CreateModel(
             name='UserRelationship',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
