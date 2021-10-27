@@ -1,0 +1,10 @@
+.suggestion{
+    cursor: pointer;
+    border-right: 1px #181c20;
+    border-left: 1px #181c20;
+    border-bottom: 1px #181c20;
+}
+
+.suggestion:hover{
+    background-color: #66ceea;
+}
