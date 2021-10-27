@@ -37,3 +37,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     def get_is_admin(self, obj):
         return obj.user.is_staff
+
+
+class MapSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ['favorite_places']

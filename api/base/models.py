@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 
 SEX_CHOICES = (
     ('Male', 'Male'),
@@ -14,6 +14,7 @@ SEX_CHOICES = (
 class CustomUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.TextField(blank=False, max_length=30)
+    #age = models.IntegerField(null=True, default=18)
     date_of_birth = models.DateField(blank=True, default=datetime.date(2002, 1, 1))
     sex = models.CharField(choices=SEX_CHOICES, default='Not chosen', max_length=20)
     location = models.CharField(max_length=50)
@@ -23,6 +24,8 @@ class CustomUser(models.Model):
     budget = models.IntegerField(blank=True, null=True)
     subscriptions = models.ManyToManyField("self", related_name='user_subscriptions', blank=True, symmetrical=False)
     followers = models.ManyToManyField("self", related_name='user_followers', blank=True, symmetrical=False)
+    favorite_places = ArrayField(ArrayField(models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15),
+                                            size=2, default=list), size=5, blank=True, default=list)
 
     def __str__(self):
         return self.first_name

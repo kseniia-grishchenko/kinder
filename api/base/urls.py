@@ -15,5 +15,9 @@ urlpatterns = [
     path('update-relationship/<str:id>/', update_relationship, name='relationship'),
     path('subscriptions/<str:id>/', get_user_subscriptions, name='subscriptions'),
     path('followers/<str:id>/', get_user_followers, name='followers'),
-    path('custom-user/<str:id>/', get_custom_user, name='custom-user')
+    path('custom-user/<str:id>/', get_custom_user, name='custom-user'),
+    path('get-map/<str:id>/', get_map_info, name='get-map'),
+    path('update-map/<str:id>/', update_map, name='update-map'),
+    path('delete-map/<str:id>/', delete_map, name='delete-map'),
+    path('delete-all-maps/<str:id>/', delete_all_maps, name='delete-all-maps')
 ]
