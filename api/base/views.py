@@ -1,5 +1,5 @@
 from base.serializers import UserSerializer, CustomUserSerializer, \
-    UserSerializerWithToken, UserPlacesSerializer, UserTagsSerializer, TagSerializer
+    UserSerializerWithToken, UserPlacesSerializer, UserTagsSerializer, TagSerializer, PlaceSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -174,7 +174,8 @@ def get_custom_user(request, id):
 @api_view(['GET'])
 def get_user_places(request, id):
     user = CustomUser.objects.get(user_id=id)
-    serializer = UserPlacesSerializer(user, many=False)
+    all_user_places = user.favorite_places.all()
+    serializer = PlaceSerializer(all_user_places, many=True)
     return Response(serializer.data)
 
 
@@ -221,7 +222,7 @@ def add_user_place(request, id):
 
         user.favorite_places.add(place)
         user.save()
-        serializer = UserPlacesSerializer(user, many=False)
+        serializer = PlaceSerializer(user.favorite_places.all(), many=True)
         return Response(serializer.data)
     else:
         message = {'detail': 'You can add only 5 favorite places!'}
@@ -237,7 +238,7 @@ def delete_user_place(request, id):
     if place in fav_places:
         user.favorite_places.remove(place)
         user.save()
-        serializer = UserPlacesSerializer(user, many=False)
+        serializer = PlaceSerializer(user.favorite_places.all(), many=True)
         return Response(serializer.data)
     else:
         message = {'detail': 'Such place does not exit in your list!'}
@@ -277,7 +278,7 @@ def add_tag(request, id):
     if tag not in all_user_tags:
         user.tags.add(tag)
         user.save()
-        serializer = UserTagsSerializer(user, many=False)
+        serializer = TagSerializer(user.tags.all(), many=True)
         return Response(serializer.data)
     else:
         message = {'detail': 'Such tag does not exist or it is already in list of your tags!'}
@@ -293,7 +294,7 @@ def delete_tag(request, id):
     if tag in all_user_tags:
         user.tags.remove(tag)
         user.save()
-        serializer = UserTagsSerializer(user, many=False)
+        serializer = TagSerializer(user.tags.all(), many=True)
         return Response(serializer.data)
     else:
         message = {'detail': 'Something went wrong!'}
