@@ -6,7 +6,6 @@ import ButtonLink from '../../components/button/button'
 import { Button } from 'antd'
 import isSubscribed from '../../helpers/isSubscribed'
 import isFollowed from '../../helpers/isFollowed'
-import {CloseCircleOutlined} from "@ant-design/icons";
 
 const UserInfo = ({ match }) => {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -73,12 +72,6 @@ const UserInfo = ({ match }) => {
             <div id='location'>{currentUser.location}</div>
             {subscribed && followed && <div>{currentUser.contact}</div>}
             <div>{currentUser.description}</div>
-            <div>User hobbies:</div>
-            {currentUser.tags.map(tag => (
-                <div style={{display: 'flex', justifyContent: 'space-between'}} key={tag.id}><div>{tag.name}</div>
-                </div>
-              ))}
-            {currentUser.tags}
             {currentUser.id !== customUser.id &&
               (subscribed && subscribed === true
                 ? (
