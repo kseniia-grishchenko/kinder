@@ -2,28 +2,13 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 SEX_CHOICES = (
     ('Male', 'Male'),
     ('Female', 'Female'),
     ('Not chosen', 'Not chosen')
 )
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Place(models.Model):
-    name = models.CharField(max_length=50, blank=True, null=True)
-    latitude = models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15)
-    longitude = models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15)
-
-    def __str__(self):
-        return self.name
 
 
 class CustomUser(models.Model):
@@ -39,8 +24,8 @@ class CustomUser(models.Model):
     budget = models.IntegerField(blank=True, null=True)
     subscriptions = models.ManyToManyField("self", related_name='user_subscriptions', blank=True, symmetrical=False)
     followers = models.ManyToManyField("self", related_name='user_followers', blank=True, symmetrical=False)
-    favorite_places = models.ManyToManyField(Place, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True, default="")
+    favorite_places = ArrayField(ArrayField(models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15),
+                                            size=2, default=list), size=5, blank=True, default=list)
 
     def __str__(self):
         return self.first_name
@@ -50,3 +35,12 @@ class UserRelationship(models.Model):
     initiator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='initiator')
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='receiver')
     got_connected = models.BooleanField(default=False)
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+
+class UserTag(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)

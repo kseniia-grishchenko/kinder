@@ -5,4 +5,3 @@ from .models import *
 admin.site.register(CustomUser)
 admin.site.register(UserRelationship)
 admin.site.register(Tag)
-admin.site.register(Place)
