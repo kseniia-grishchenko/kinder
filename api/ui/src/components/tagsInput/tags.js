@@ -52,7 +52,7 @@ const TagsInput = () => {
               `/delete-tag/${tag_id}/`,
               config,
           )
-          setTags(tags_from_db);
+          setUserTags(tags_from_db);
           alert('Successfully deleted!');
       } catch (error) {
           alert(error.response.data.detail)
@@ -67,12 +67,12 @@ const TagsInput = () => {
           }
       }
       try {
-          const {data: tags_from_db} = await axios.post(
+          const {data: tagsFromDb} = await axios.post(
               `/add-tag/${user.id}/`,
               {tag_name: tag_name},
               config,
           )
-          setTags(tags_from_db);
+          setUserTags(tagsFromDb);
           alert('Successfully added!');
       } catch (error) {
           alert(error.response.data.detail)
@@ -87,9 +87,9 @@ const TagsInput = () => {
 
   const onChangeHandler = (text) =>{
       let matches = []
-      if(text.length>0){
+      if(text.length > 2){
           matches = tags.filter(tag => {
-              const regex = new RegExp(`${text}`,"gi");
+              const regex = new RegExp(`^${text}`,"gi");
               return tag.name.match(regex);
           })
       }
@@ -100,27 +100,31 @@ const TagsInput = () => {
     return (
         <div>
           <div className="container">
-            Hobbies:
-            <input type="text"
-                   className="col-md-10 input"
-                   style={{marginTop: 10}}
-                   onChange={e => {onChangeHandler(e.target.value)}}
-                   value={text}
-                   onBlur={() => {
-                       setTimeout(() => {
-                           setSuggestions([])
-                       }, 25);
-                   }}
+          <div id="tags-label"><strong>Tags:</strong></div>
+            <div>
+              <input
+              type="text"
+               className="input"
+               style={{marginTop: 10}}
+               onChange={e => {onChangeHandler(e.target.value)}}
+               value={text}
+               onBlur={() => {
+                   setTimeout(() => {
+                       setSuggestions([])
+                   }, 25);
+               }}
             />
+            </div>
               {suggestions && suggestions.map((suggestion, i) =>
-              <div key={i} className="suggestion col-md-10 justify-content-md-center"
+              <div key={i} className="suggestion"
                    onClick={()=>onSuggestHandler(suggestion.name)}>
                   {suggestion.name}
               </div>)}
           </div>
           {userTags && userTags.map(tag => (
-            <div style={{display: 'flex', justifyContent: 'space-around'}} key={tag.id}><div>{tag.name}</div>
-            <CloseCircleOutlined onClick={() => removeTag(tag.id)}/>
+            <div style={{display: 'flex', justifyContent: 'space-around', marginTop: '10px'}} key={tag.id}>
+                <div>{tag.name}</div>
+                <div><CloseCircleOutlined onClick={() => removeTag(tag.id)}/></div>
             </div>
           ))}
         </div>
