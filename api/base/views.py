@@ -242,8 +242,8 @@ def add_tag(request, id):
     user = CustomUser.objects.get(user_id=id)
     all_user_tags = user.tags.all()
     data = request.data
-    tag_id = data['tag_id']
-    tag = Tag.objects.get(id=tag_id)
+    tag_name = data['tag_name']
+    tag = Tag.objects.get(name=tag_name)
     if tag not in all_user_tags:
         user.tags.add(tag)
         user.save()
@@ -257,7 +257,8 @@ def add_tag(request, id):
 @api_view(['GET'])
 def get_user_tags(request, id):
     user = CustomUser.objects.get(user_id=id)
-    serializer = TagSerializer(user, many=False)
+    all_user_tags = user.tags.all()
+    serializer = TagsSerializer(all_user_tags, many=True)
     return Response(serializer.data)
 
 
