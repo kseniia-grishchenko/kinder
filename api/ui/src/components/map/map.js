@@ -27,14 +27,10 @@ const Map = ({}) => {
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('user')) || null
     const getPlaces = async () => {
-      const { data: places_from_db } = await axios.get(
-          `/get-map/${currentUser.id}/`
+      const { data: placesFromDb } = await axios.get(
+          `/get-user-place/${currentUser.id}/`
       )
-      const { favorite_places: favoritePlaces } = places_from_db
-      setPlaces(favoritePlaces.map(place => ({
-        lat: parseFloat(place[0]).toFixed(15),
-        lng: parseFloat(place[1]).toFixed(15)
-      })))
+      setPlaces(placesFromDb);
     }
 
     getPlaces().catch((err) => console.log(err))
@@ -59,20 +55,36 @@ const Map = ({}) => {
       }
     }
     try {
-      const { data: places_from_db } = await axios.post(
-          `/update-map/${user.id}/`,
+      const { data: placesFromDb } = await axios.post(
+          `/add-user-place/${user.id}/`,
           {
+            name: address,
             latitude: coordinates.lat,
             longitude: coordinates.lng
           },
           config
       )
-      const { favorite_places: favoritePlaces } = places_from_db
-      setPlaces(favoritePlaces.map(place => ({
-        lat: parseFloat(place[0]).toFixed(15),
-        lng: parseFloat(place[1]).toFixed(15)
-      })))
+      setPlaces(placesFromDb)
       alert('User favorite places successfully updated');
+    } catch (error) {
+      alert(error.response.data.detail || error)
+    }
+  }
+
+    const deletePlace = async (place_id) => {
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      }
+    }
+    try {
+      const { data: placesFromDb } = await axios.delete(
+          `/delete-user-place/${place_id}/`,
+          config,
+      )
+      setPlaces(placesFromDb)
+      alert('Successfully deleted!');
     } catch (error) {
       alert(error.response.data.detail)
     }
@@ -99,42 +111,13 @@ const Map = ({}) => {
     places.forEach(place => {
       new google.maps.Marker({
         position: {
-          lat: Number(place.lat),
-          lng: Number(place.lng)
+          lat: Number(place.latitude),
+          lng: Number(place.longitude)
         },
         map,
         title: 'Favorite place!'
       })
     })
-  }
-
-  const deletePlace = async (index) => {
-    const place = places[index]
-    const config = {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-        data: JSON.stringify({
-          latitude: place.lat,
-          longitude: place.lng
-        })
-      }
-    }
-    try {
-      const { data: places_from_db } = await axios.delete(
-          `/delete-map/${user.id}/`,
-          config,
-      )
-      const { favorite_places: favoritePlaces } = places_from_db
-      setPlaces(favoritePlaces.map(place => ({
-        lat: parseFloat(place[0]).toFixed(15),
-        lng: parseFloat(place[1]).toFixed(15)
-      })))
-      alert('Successfully deleted!');
-    } catch (error) {
-      alert(error.response.data.detail)
-    }
-    
   }
 
   return (
@@ -168,21 +151,15 @@ const Map = ({}) => {
               <Button type='primary' onClick={finish}>
                 Add place
               </Button>
-              {places.map((place, index) => (
-                <div style={{display: 'flex', justifyContent: 'space-between'}} key={index}><div>Lat: {place.lat} lng: {place.lng}</div>
-                <CloseCircleOutlined onClick={() => deletePlace(index)}/>
+              {places && places.map((place) => (
+                <div style={{display: 'flex', justifyContent: 'space-between'}} key={place.id}><div>{place.name}</div>
+                <CloseCircleOutlined onClick={() => deletePlace(place.id)}/>
                 </div>
               ))}
             </div>
           )}
         </PlacesAutocomplete>
       </div>
-      {/* <div> */}
-      {/*  User`s favorite places: */}
-      {/* </div> */}
-      {/* <div> */}
-      {/*  {places && places.map(place => <div>{place.lat} {place.lng}</div>)} */}
-      {/* </div> */}
       <div>
         {{ MapConnected }
           ? (

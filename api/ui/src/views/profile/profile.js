@@ -17,8 +17,8 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       const getCustomUser = async () => {
-        const { data: customUserFromDb } = await axios.get(
-          `/custom-user/${user.id}/`
+        const {data: customUserFromDb} = await axios.get(
+            `/custom-user/${user.id}/`
         )
         setCustomUser(customUserFromDb)
       }
@@ -28,13 +28,13 @@ const Profile = () => {
   }, [user])
 
   const onFinish = async ({
-    username,
-    location,
-    sex,
-    budget,
-    description,
-    contact
-  }) => {
+                            username,
+                            location,
+                            sex,
+                            budget,
+                            description,
+                            contact
+                          }) => {
     const config = {
       headers: {
         'Content-type': 'application/json',
@@ -43,16 +43,16 @@ const Profile = () => {
     }
     try {
       await axios.put(
-        '/profile/update/',
-        {
-          username,
-          location,
-          sex,
-          budget,
-          description,
-          contact
-        },
-        config
+          '/profile/update/',
+          {
+            username,
+            location,
+            sex,
+            budget,
+            description,
+            contact
+          },
+          config
       )
       alert('User info successfully updated')
     } catch (error) {
@@ -61,66 +61,66 @@ const Profile = () => {
   }
 
   return (
-    <div>
-      {customUser && (
-        <Form
-          labelCol={{
-            span: 4
-          }}
-          wrapperCol={{
-            span: 14
-          }}
-          layout='horizontal'
-          initialValues={{
-            size: 'default',
-            username: customUser.first_name,
-            location: customUser.location,
-            sex: customUser.sex,
-            contact: customUser.contact,
-            budget: Number(customUser.budget),
-            description: customUser.description,
-          }}
-          size='default'
-          onFinish={onFinish}
-        >
-          <Form.Item label='Name' name='username'>
-            <Input/>
-          </Form.Item>
-          <Form.Item label='Location' name='location'>
-            <Input/>
-          </Form.Item>
-          <Form.Item label='Sex' name='sex'>
-            <Select>
-              <Select.Option value='Female'>Female</Select.Option>
-              <Select.Option value='Male'>Male</Select.Option>
-              <Select.Option value='Not chosen'>Not chosen</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label='Contact' name='contact'>
-            <Input/>
-          </Form.Item>
-          <Form.Item label='Date of birth' name='date_of_birth'>
-            <DatePicker />
-          </Form.Item>
-          <Form.Item label='Budget' name='budget'>
-            <InputNumber/>
-          </Form.Item>
-          <Form.Item label='Description' name='description'>
-            <TextArea/>
-          </Form.Item>
-          <div>
-            <TagsInput />
-          </div>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type='primary' htmlType='submit'>
-              Update
-            </Button>
-          </Form.Item>
-        </Form>
-      )}
-      <Map />
-    </div>
-  )
+      <div>
+        {customUser && (
+            <Form
+                labelCol={{
+                  span: 4
+                }}
+                wrapperCol={{
+                  span: 14
+                }}
+                layout='horizontal'
+                initialValues={{
+                  size: 'default',
+                  username: customUser.first_name,
+                  location: customUser.location,
+                  sex: customUser.sex,
+                  contact: customUser.contact,
+                  budget: Number(customUser.budget),
+                  description: customUser.description,
+                }}
+                size='default'
+                onFinish={onFinish}
+            >
+              <Form.Item label='Name' name='username'>
+                <Input/>
+              </Form.Item>
+              <Form.Item label='Location' name='location'>
+                <Input/>
+              </Form.Item>
+              <Form.Item label='Sex' name='sex'>
+                <Select>
+                  <Select.Option value='Female'>Female</Select.Option>
+                  <Select.Option value='Male'>Male</Select.Option>
+                  <Select.Option value='Not chosen'>Not chosen</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label='Contact' name='contact'>
+                <Input/>
+              </Form.Item>
+              <Form.Item label='Date of birth' name='date_of_birth'>
+                <DatePicker/>
+              </Form.Item>
+              <Form.Item label='Budget' name='budget'>
+                <InputNumber/>
+              </Form.Item>
+              <Form.Item label='Description' name='description'>
+                <TextArea/>
+              </Form.Item>
+              <Form.Item wrapperCol={{offset: 8, span: 16}}>
+                <Button type='primary' htmlType='submit'>
+                  Update
+                </Button>
+              </Form.Item>
+            </Form>
+        )}
+        <div style={{display: 'flex', justifyContent: "center"}}>
+          <TagsInput/>
+        </div>
+        <Map/>
+      </div>
+)
 }
 
 export default Profile
