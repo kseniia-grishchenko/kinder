@@ -1,4 +1,5 @@
-from base.serializers import UserSerializer, CustomUserSerializer, UserSerializerWithToken, MapSerializer
+from base.serializers import UserSerializer, CustomUserSerializer,\
+    UserSerializerWithToken, MapSerializer, TagSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -10,7 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from decimal import Decimal
 import json
 
-from .models import CustomUser
+from .models import CustomUser, Tag
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -231,3 +232,50 @@ def delete_all_maps(request, id):
     user.save()
     serializer = MapSerializer(user, many=False)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_tag(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    all_user_tags = user.tags.all()
+    data = request.data
+    tag_id = data['tag_id']
+    tag = Tag.objects.get(id=tag_id)
+    if tag not in all_user_tags:
+        user.tags.add(tag)
+        user.save()
+        serializer = TagSerializer(user, many=False)
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'Such tag does not exist or it is already in list of your tags!'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_user_tags(request, id):
+    user = CustomUser.objects.get(user_id=id)
+    serializer = TagSerializer(user, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_tag(request, id):
+    if request.user.id != int(id):
+        return
+    user = CustomUser.objects.get(user_id=id)
+    all_user_tags = user.tags.all()
+    data = request.data
+    tag_id = data['tag_id']
+    tag = Tag.objects.get(id=tag_id)
+    if tag in all_user_tags:
+        user.tags.remove(tag)
+        user.save()
+        serializer = TagSerializer(user, many=False)
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'Something went wrong!'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

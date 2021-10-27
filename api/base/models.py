@@ -11,6 +11,13 @@ SEX_CHOICES = (
 )
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.TextField(blank=False, max_length=30)
@@ -26,6 +33,7 @@ class CustomUser(models.Model):
     followers = models.ManyToManyField("self", related_name='user_followers', blank=True, symmetrical=False)
     favorite_places = ArrayField(ArrayField(models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15),
                                             size=2, default=list), size=5, blank=True, default=list)
+    tags = models.ManyToManyField(Tag, blank=True, default="")
 
     def __str__(self):
         return self.first_name
@@ -35,12 +43,3 @@ class UserRelationship(models.Model):
     initiator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='initiator')
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='receiver')
     got_connected = models.BooleanField(default=False)
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50)
-
-
-class UserTag(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)

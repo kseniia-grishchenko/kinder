@@ -44,3 +44,10 @@ class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['favorite_places']
+
+
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ['tags']

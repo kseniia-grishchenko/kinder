@@ -19,5 +19,8 @@ urlpatterns = [
     path('get-map/<str:id>/', get_map_info, name='get-map'),
     path('update-map/<str:id>/', update_map, name='update-map'),
     path('delete-map/<str:id>/', delete_map, name='delete-map'),
-    path('delete-all-maps/<str:id>/', delete_all_maps, name='delete-all-maps')
+    path('delete-all-maps/<str:id>/', delete_all_maps, name='delete-all-maps'),
+    path('add-tag/<str:id>/', add_tag, name='add-tag'),
+    path('get-user-tags/<str:id>/', get_user_tags, name='get-user-tags'),
+    path('delete-tag/<str:id>/', delete_tag, name='delete-tag'),
 ]
