@@ -39,22 +39,29 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return obj.user.is_staff
 
 
-class MapSerializer(serializers.ModelSerializer):
+class UserPlacesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
         fields = ['favorite_places']
 
 
-class TagSerializer(serializers.ModelSerializer):
+class PlaceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
+class UserTagsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
         fields = ['tags']
 
 
-class TagsSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name']
+        fields = '__all__'

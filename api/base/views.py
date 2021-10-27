@@ -1,5 +1,5 @@
-from base.serializers import UserSerializer, CustomUserSerializer,\
-    UserSerializerWithToken, MapSerializer, TagSerializer, TagsSerializer
+from base.serializers import UserSerializer, CustomUserSerializer, \
+    UserSerializerWithToken, UserPlacesSerializer, UserTagsSerializer, TagSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -11,7 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from decimal import Decimal
 import json
 
-from .models import CustomUser, Tag
+from .models import CustomUser, Tag, Place
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -172,29 +172,56 @@ def get_custom_user(request, id):
 
 
 @api_view(['GET'])
-def get_map_info(request, id):
+def get_user_places(request, id):
     user = CustomUser.objects.get(user_id=id)
-    serializer = MapSerializer(user, many=False)
+    serializer = UserPlacesSerializer(user, many=False)
     return Response(serializer.data)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def update_map(request, id):
+def add_user_place(request, id):
     if request.user.id != int(id):
         return
     user = CustomUser.objects.get(user_id=id)
     data = request.data
-    fav_places = user.favorite_places
     latitude = Decimal(data['latitude'])
     longitude = Decimal(data['longitude'])
-    if len(fav_places) < 5:
-        if [latitude, longitude] in fav_places:
+    received_place = {
+        'name': data['name'],
+        'latitude': latitude,
+        'longitude': longitude
+    }
+    fav_places = user.favorite_places.all()
+    all_places = Place.objects.all()
+
+    if fav_places.count() < 5:
+        user_result = filter(lambda x: x.name == received_place['name']
+                          and x.longitude == received_place['longitude']
+                          and x.latitude == received_place['latitude'], fav_places)
+
+        if list(user_result) != list():
             message = {'detail': 'This place is already in your favorites!'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        fav_places.append([latitude, longitude])
+
+        place_result = filter(lambda x: x.name == received_place['name']
+                          and x.longitude == received_place['longitude']
+                          and x.latitude == received_place['latitude'], all_places)
+
+        if list(place_result) == list():
+            place = Place.objects.create(
+                name=data['name'],
+                latitude=data['latitude'],
+                longitude=data['longitude']
+            )
+        else:
+            place = Place.objects.get(
+                name=received_place['name']
+            )
+
+        user.favorite_places.add(place)
         user.save()
-        serializer = MapSerializer(user, many=False)
+        serializer = UserPlacesSerializer(user, many=False)
         return Response(serializer.data)
     else:
         message = {'detail': 'You can add only 5 favorite places!'}
@@ -203,34 +230,37 @@ def update_map(request, id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def delete_map(request, id):
-    if request.user.id != int(id):
-        return
-    user = CustomUser.objects.get(user_id=id)
-    data = json.loads(request.headers['Data'])
-    fav_places = user.favorite_places
-
-    latitude = Decimal(data['latitude'])
-    longitude = Decimal(data['longitude'])
-    if [latitude, longitude] in fav_places:
-        fav_places.remove([latitude, longitude])
+def delete_user_place(request, id):
+    user = CustomUser.objects.get(user_id=request.user.id)
+    fav_places = user.favorite_places.all()
+    place = Place.objects.get(id=id)
+    if place in fav_places:
+        user.favorite_places.remove(place)
         user.save()
-        serializer = MapSerializer(user, many=False)
+        serializer = UserPlacesSerializer(user, many=False)
         return Response(serializer.data)
     else:
         message = {'detail': 'Such place does not exit in your list!'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def delete_all_maps(request, id):
-    if request.user.id != int(id):
-        return
+# @api_view(['DELETE'])
+# @permission_classes([IsAuthenticated])
+# def delete_all_maps(request, id):
+#     if request.user.id != int(id):
+#         return
+#     user = CustomUser.objects.get(user_id=id)
+#     user.favorite_places = [[]]
+#     user.save()
+#     serializer = UserPlacesSerializer(user, many=False)
+#     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_user_tags(request, id):
     user = CustomUser.objects.get(user_id=id)
-    user.favorite_places = [[]]
-    user.save()
-    serializer = MapSerializer(user, many=False)
+    all_user_tags = user.tags.all()
+    serializer = TagSerializer(all_user_tags, many=True)
     return Response(serializer.data)
 
 
@@ -247,19 +277,11 @@ def add_tag(request, id):
     if tag not in all_user_tags:
         user.tags.add(tag)
         user.save()
-        serializer = TagSerializer(user, many=False)
+        serializer = UserTagsSerializer(user, many=False)
         return Response(serializer.data)
     else:
         message = {'detail': 'Such tag does not exist or it is already in list of your tags!'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_user_tags(request, id):
-    user = CustomUser.objects.get(user_id=id)
-    all_user_tags = user.tags.all()
-    serializer = TagsSerializer(all_user_tags, many=True)
-    return Response(serializer.data)
 
 
 @api_view(['DELETE'])
@@ -271,7 +293,7 @@ def delete_tag(request, id):
     if tag in all_user_tags:
         user.tags.remove(tag)
         user.save()
-        serializer = TagSerializer(user, many=False)
+        serializer = UserTagsSerializer(user, many=False)
         return Response(serializer.data)
     else:
         message = {'detail': 'Something went wrong!'}
@@ -281,5 +303,5 @@ def delete_tag(request, id):
 @api_view(['GET'])
 def get_all_tags(request):
     tags = Tag.objects.all()
-    serializer = TagsSerializer(tags, many=True)
+    serializer = TagSerializer(tags, many=True)
     return Response(serializer.data)
