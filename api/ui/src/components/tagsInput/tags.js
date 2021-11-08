@@ -72,6 +72,7 @@ const TagsInput = () => {
               {tag_name: tag_name},
               config,
           )
+          setText('')
           setUserTags(tagsFromDb);
           alert('Successfully added!');
       } catch (error) {
@@ -100,12 +101,12 @@ const TagsInput = () => {
     return (
         <div>
           <div className="container">
-          <div id="tags-label"><strong>Tags:</strong></div>
+          <div id="tags-label" style={{display: 'flex', justifyContent: 'center'}}><strong>Tags</strong></div>
             <div>
               <input
               type="text"
                className="input"
-               style={{marginTop: 10}}
+               style={{marginTop: 10, width: '100%'}}
                onChange={e => {onChangeHandler(e.target.value)}}
                value={text}
                onBlur={() => {
@@ -122,7 +123,7 @@ const TagsInput = () => {
               </div>)}
           </div>
           {userTags && userTags.map(tag => (
-            <div style={{display: 'flex', justifyContent: 'space-around', marginTop: '10px'}} key={tag.id}>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}} key={tag.id}>
                 <div>{tag.name}</div>
                 <div><CloseCircleOutlined onClick={() => removeTag(tag.id)}/></div>
             </div>

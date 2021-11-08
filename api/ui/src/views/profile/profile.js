@@ -61,7 +61,7 @@ const Profile = () => {
   }
 
   return (
-      <div>
+      <div style={{display: 'flex', flexDirection: 'column',  gap: '30px'}}>
         {customUser && (
             <Form
                 labelCol={{
@@ -108,17 +108,19 @@ const Profile = () => {
               <Form.Item label='Description' name='description'>
                 <TextArea/>
               </Form.Item>
-              <Form.Item wrapperCol={{offset: 8, span: 16}}>
+              <Form.Item style={{display: 'flex', justifyContent: 'center'}}>
                 <Button type='primary' htmlType='submit'>
                   Update
                 </Button>
               </Form.Item>
             </Form>
         )}
-        <div style={{display: 'flex', justifyContent: "center"}}>
+        <div style={{display: 'block', width: '300px', margin: 'auto'}}>
           <TagsInput/>
         </div>
-        <Map/>
+        <div>
+          <Map/>
+        </div>
       </div>
 )
 }
