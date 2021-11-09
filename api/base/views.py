@@ -47,12 +47,50 @@ def register_user(request):
 
 @api_view(['GET'])
 def list_all(request):
-    users = CustomUser.objects.select_related('user').all()
-    if request.user.is_authenticated:
-        user = User.objects.get(id=request.user.id)
-        users = users.exclude(user=user)
-    serializer = CustomUserSerializer(users, many=True)
-    return Response(serializer.data)
+    try:
+        search = request.data["search"]
+        all_tags = Tag.objects.all()
+        length = len(search)
+        users = CustomUser.objects.select_related('user').all()
+
+        if len(search) == 0:
+            if request.user.is_authenticated:
+                user = User.objects.get(id=request.user.id)
+                users = users.exclude(user=user)
+            serializer = CustomUserSerializer(users, many=True)
+            return Response(serializer.data)
+
+        else:
+            user_list = []
+
+            for tag in all_tags:
+                if tag.name[:length].lower() == search.lower():
+                    for user in users:
+                        if tag in user.tags.all():
+                            user_list.append(user)
+
+            new_user_list = list(set(user_list))
+            user = User.objects.get(id=request.user.id)
+            user_by_username = CustomUser.objects.get(first_name=user.username)
+
+            if request.user.is_authenticated and user_by_username in new_user_list:
+                new_user_list.remove(user_by_username)
+            serializer = CustomUserSerializer(new_user_list, many=True)
+            return Response(serializer.data)
+    except:
+        users = CustomUser.objects.select_related('user').all()
+        if request.user.is_authenticated:
+            user = User.objects.get(id=request.user.id)
+            users = users.exclude(user=user)
+        serializer = CustomUserSerializer(users, many=True)
+        return Response(serializer.data)
+
+
+# def get_user_tags(request, id):
+#     user = CustomUser.objects.get(user_id=id)
+#     all_user_tags = user.tags.all()
+#     serializer = TagSerializer(all_user_tags, many=True)
+#     return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -84,7 +122,6 @@ def get_my_profile(request):
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     user = request.user
-    print('Hello')
 
     data = request.data
     if data:
@@ -198,16 +235,16 @@ def add_user_place(request, id):
 
     if fav_places.count() < 5:
         user_result = filter(lambda x: x.name == received_place['name']
-                          and x.longitude == received_place['longitude']
-                          and x.latitude == received_place['latitude'], fav_places)
+                                       and x.longitude == received_place['longitude']
+                                       and x.latitude == received_place['latitude'], fav_places)
 
         if list(user_result) != list():
             message = {'detail': 'This place is already in your favorites!'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
         place_result = filter(lambda x: x.name == received_place['name']
-                          and x.longitude == received_place['longitude']
-                          and x.latitude == received_place['latitude'], all_places)
+                                        and x.longitude == received_place['longitude']
+                                        and x.latitude == received_place['latitude'], all_places)
 
         if list(place_result) == list():
             place = Place.objects.create(
