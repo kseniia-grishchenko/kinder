@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, DatePicker, Form, Input, InputNumber, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import Modal from 'antd/es/modal/Modal'
 import Map from '../../components/map/map'
 import TagsInput from '../../components/tagsInput/tags'
 
@@ -28,13 +27,13 @@ const Profile = () => {
   }, [user])
 
   const onFinish = async ({
-                            username,
-                            location,
-                            sex,
-                            budget,
-                            description,
-                            contact
-                          }) => {
+    username,
+    location,
+    sex,
+    budget,
+    description,
+    contact
+  }) => {
     const config = {
       headers: {
         'Content-type': 'application/json',
