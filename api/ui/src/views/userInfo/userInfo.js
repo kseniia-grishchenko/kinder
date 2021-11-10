@@ -5,7 +5,8 @@ import './userInfo.css'
 import ButtonLink from '../../components/button/button'
 import { Button } from 'antd'
 import isSubscribed from '../../helpers/isSubscribed'
-import isFollowed from '../../helpers/isFollowed'
+import isFollowed from '../../helpers/isFollowed';
+import { List, Typography, Divider } from 'antd';
 
 const UserInfo = ({ match }) => {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -14,19 +15,25 @@ const UserInfo = ({ match }) => {
   const userId = match.params.id
   const [subscribed, setSubscribed] = useState(false)
   const [followed, setFollowed] = useState(false)
+  const [tags, setTags] = useState([])
 
   useEffect(async () => {
     let cleanupFunction = false
 
     const getUser = async () => {
-      const { data: user_from_db } = await axios.get(
+      const { data: userFromDb } = await axios.get(
         `/user/${userId}/`
       )
 
-      setSubscribed(isSubscribed(customUser?.id, user_from_db))
-      setFollowed(isFollowed(customUser?.id, user_from_db))
+      const { data: userTags } = await axios.get(
+          `/get-user-tags/${userId}/`
+      )
 
-      if (!cleanupFunction) setCurrentUser(user_from_db)
+      setTags(userTags);
+      setSubscribed(isSubscribed(customUser?.id, userFromDb))
+      setFollowed(isFollowed(customUser?.id, userFromDb))
+
+      if (!cleanupFunction) setCurrentUser(userFromDb)
     }
 
     getUser().catch((err) => console.log(err))
@@ -87,6 +94,20 @@ const UserInfo = ({ match }) => {
           </div>
         </div>
       )}
+      <div id={'additional'}>
+        {tags &&
+          <List
+              id={'list'}
+              header={<div><strong>User tags</strong></div>}
+            dataSource={tags}
+            renderItem={item => (
+            <List.Item>
+              {item.name}
+            </List.Item>
+            )}
+          />
+        }
+      </div>
     </div>
   )
 }

@@ -1,6 +1,15 @@
-#main-info {
+#main-info, #additional {
     display: flex;
     padding: 20px;
+}
+
+#additional, .ant-list-item {
+    display: block;
+    text-align: center;
+}
+
+#additional > #list {
+    width: 300px;
 }
 
 #main-info > #important {

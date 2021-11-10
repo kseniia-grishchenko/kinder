@@ -46,9 +46,8 @@ def register_user(request):
 
 
 @api_view(['GET'])
-def list_all(request):
+def list_all(request, search=''):
     try:
-        search = request.data["search"]
         all_tags = Tag.objects.all()
         length = len(search)
         users = CustomUser.objects.select_related('user').all()
@@ -70,12 +69,17 @@ def list_all(request):
                             user_list.append(user)
 
             new_user_list = list(set(user_list))
+            print('1', new_user_list)
+            print('4', request)
             user = User.objects.get(id=request.user.id)
+            print(user)
             user_by_username = CustomUser.objects.get(first_name=user.username)
 
             if request.user.is_authenticated and user_by_username in new_user_list:
                 new_user_list.remove(user_by_username)
+            print('2', new_user_list)
             serializer = CustomUserSerializer(new_user_list, many=True)
+            print('3', serializer.data)
             return Response(serializer.data)
     except:
         users = CustomUser.objects.select_related('user').all()
