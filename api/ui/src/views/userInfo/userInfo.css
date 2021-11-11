@@ -3,6 +3,13 @@
     padding: 20px;
 }
 
+#user-places {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 #additional, .ant-list-item {
     display: block;
     text-align: center;

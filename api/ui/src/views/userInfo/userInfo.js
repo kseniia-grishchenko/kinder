@@ -7,6 +7,7 @@ import { Button } from 'antd'
 import isSubscribed from '../../helpers/isSubscribed'
 import isFollowed from '../../helpers/isFollowed';
 import { List, Typography, Divider } from 'antd';
+import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 
 const UserInfo = ({ match }) => {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -16,6 +17,9 @@ const UserInfo = ({ match }) => {
   const [subscribed, setSubscribed] = useState(false)
   const [followed, setFollowed] = useState(false)
   const [tags, setTags] = useState([])
+  const [places, setPlaces] = useState([])
+  const [map, setMap] = React.useState(null)
+  const google = window.google
 
   useEffect(async () => {
     let cleanupFunction = false
@@ -29,6 +33,14 @@ const UserInfo = ({ match }) => {
           `/get-user-tags/${userId}/`
       )
 
+      console.log(tags)
+
+      if(isSubscribed(customUser?.id, userFromDb) && isFollowed(customUser?.id, userFromDb)) {
+        const {data: userPlaces} = await  axios.get(`/get-user-place/${userId}/`)
+        console.log(userPlaces)
+        setPlaces(userPlaces)
+      }
+
       setTags(userTags);
       setSubscribed(isSubscribed(customUser?.id, userFromDb))
       setFollowed(isFollowed(customUser?.id, userFromDb))
@@ -40,6 +52,10 @@ const UserInfo = ({ match }) => {
 
     return () => (cleanupFunction = true)
   }, [userId, subscribed])
+
+  useEffect(() => {
+    markPlaces()
+  }, [places])
 
   const subscribe = async () => {
     const config = {
@@ -53,6 +69,36 @@ const UserInfo = ({ match }) => {
       config
     )
     setSubscribed(() => isSubscribed(customUser.id, updated_user))
+  }
+
+  const MapConnected = () => {
+    const { isLoaded } = useJsApiLoader({
+      id: 'google-map-script',
+      googleMapsApiKey: 'REACT_APP_GOOGLE_API_KEY'
+    })
+  }
+
+  const onLoad = React.useCallback(function callback (map) {
+    const bounds = new window.google.maps.LatLngBounds()
+    map.fitBounds(bounds)
+    setMap(map)
+  }, [])
+
+  const onUnmount = React.useCallback(function callback (map) {
+    setMap(null)
+  }, [])
+
+  const markPlaces = () => {
+    places.forEach(place => {
+      new google.maps.Marker({
+        position: {
+          lat: Number(place.latitude),
+          lng: Number(place.longitude)
+        },
+        map,
+        title: place.name
+      })
+    })
   }
 
   return (
@@ -95,18 +141,43 @@ const UserInfo = ({ match }) => {
         </div>
       )}
       <div id={'additional'}>
-        {tags &&
-          <List
-              id={'list'}
-              header={<div><strong>User tags</strong></div>}
-            dataSource={tags}
-            renderItem={item => (
-            <List.Item>
-              {item.name}
-            </List.Item>
-            )}
-          />
-        }
+        <div>
+          {tags && tags.length !== 0 ? (
+            <List
+                id={'list'}
+                header={<div><strong>User tags</strong></div>}
+              dataSource={tags}
+              renderItem={item => (
+              <List.Item>
+                {item.name}
+              </List.Item>
+              )}
+          /> ) : (
+              <div style={{border: '1px solid', padding: '6px'}}>No tags</div>
+          )}
+        </div>
+        <div id={'user-places'}>
+        {{ MapConnected } && followed && subscribed
+          && (
+            <GoogleMap
+              mapContainerStyle={
+              {
+              width: '800px',
+              height: '400px'
+              }
+            }
+              center={
+                {
+                  lat: 50.4501,
+                  lng: 30.5234
+                }
+              }
+              zoom={10}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+            />)
+         }
+        </div>
       </div>
     </div>
   )
