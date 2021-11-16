@@ -12,7 +12,7 @@ const Home = () => {
     const config = {
       headers: {
           'Content-type': 'application/json',
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user?.token}`
       }
   }
 
@@ -30,13 +30,19 @@ const Home = () => {
     getUsers().catch((err) => console.log(err))
   }, [])
 
+    useEffect(() => {
+        if(user === null) {
+            setUsers([])
+        }
+    }, [user])
+
     const onSearchHandler = async (text) =>{
+      setText(text);
       if(text === '') {
           const { data: usersFromDb } = await axios.get(
             '/users/',
               config
           )
-          setText(text);
           setUsers((usersFromDb))
           return
       }
@@ -47,7 +53,6 @@ const Home = () => {
         )
         setUsers(suggested_users);
     }
-    setText(text);
 
 }
 
