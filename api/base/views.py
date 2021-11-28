@@ -1,7 +1,9 @@
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from base.serializers import UserSerializer, CustomUserSerializer, \
     UserSerializerWithToken, UserPlacesSerializer, UserTagsSerializer, TagSerializer, PlaceSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from rest_auth.registration.serializers import SocialLoginSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -10,8 +12,21 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from decimal import Decimal
 import json
-
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
 from .models import CustomUser, Tag, Place
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -40,9 +55,10 @@ def register_user(request):
         )
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
-    except:
+    except Exception as e:
+        print(e)
         message = {'detail': 'User already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        return Response(exception=message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

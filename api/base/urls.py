@@ -1,5 +1,5 @@
 from django.contrib.auth.views import LogoutView
-from django.urls import path
+from django.urls import path, include
 
 from .views import *
 
@@ -25,4 +25,8 @@ urlpatterns = [
     path('get-user-tags/<str:id>/', get_user_tags, name='get-user-tags'),
     path('delete-tag/<str:id>/', delete_tag, name='delete-tag'),
     path('get-all-tags/', get_all_tags, name='get-all-tags'),
+    # path('rest-auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    # path('rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
+    # path('rest-auth/', include('rest_auth.urls')),
+    # path('rest-auth/registration/', include('rest_auth.registration.urls')),
 ]

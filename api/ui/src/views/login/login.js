@@ -4,6 +4,8 @@ import './login.css'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Modal from 'antd/es/modal/Modal'
+import googleLogin from '../../components/google/google'
+import GoogleLogin from 'react-google-login'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -50,6 +52,12 @@ const Login = () => {
     }
   }
 
+   const responseGoogle = async(response) => {
+    let googleResponse  = await googleLogin(response.accessToken)
+    console.log(googleResponse);
+    console.log(response);
+  }
+
   return (
     <div className='login'>
       <Form
@@ -84,6 +92,12 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
+      <GoogleLogin
+          clientId="386317483175-r0vcbmt63ml1fnh2a8s72svuvh52mlrg.apps.googleusercontent.com"
+          buttonText="LOGIN WITH GOOGLE"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+        />
       <Link to='/register'>Are you a new user? Register here</Link>
     </div>
   )

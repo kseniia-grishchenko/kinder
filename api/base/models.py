@@ -21,6 +21,7 @@ class Place(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     latitude = models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15)
     longitude = models.DecimalField(blank=True, null=True, max_digits=30, decimal_places=15)
+    # default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -29,7 +30,6 @@ class Place(models.Model):
 class CustomUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.TextField(blank=False, max_length=30)
-    # age = models.IntegerField(null=True, default=18)
     date_of_birth = models.DateField(blank=True, default=datetime.date(2002, 1, 1))
     sex = models.CharField(choices=SEX_CHOICES, default='Not chosen', max_length=20)
     location = models.CharField(max_length=50)
@@ -44,6 +44,12 @@ class CustomUser(models.Model):
 
     def __str__(self):
         return self.first_name
+
+    # def save(self):
+    #     if not self.favorite_places:
+    #         fav = Place.objects.get(default=True)
+    #         self.favorite_places = fav
+    #     super().save(self)
 
 
 class UserRelationship(models.Model):
